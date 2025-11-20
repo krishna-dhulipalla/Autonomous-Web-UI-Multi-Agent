@@ -1,0 +1,46 @@
+# playwright codegen https://linear.app/
+
+from playwright.sync_api import Playwright, sync_playwright, expect
+import re
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False, slow_mo=200)
+    context = browser.new_context()
+    page = context.new_page()
+    page.get_by_role("main").get_by_role("button", name="Create new issue").click()
+    page.get_by_role("textbox", name="Issue title").locator("p").click()
+    page.get_by_role("textbox", name="Issue description").locator("p").click()
+    page.get_by_role("combobox", name="Change status").click()
+    page.get_by_role("option", name="Backlog").click()
+    page.get_by_role("combobox", name="Change status").click()
+    page.get_by_text("In Progress").click()
+    page.get_by_role("combobox", name="Change priority. No priority").click()
+    page.locator("div").filter(has_text=re.compile(r"^High$")).click()
+    page.get_by_role("combobox", name="Change assignee. Currently no").click()
+    page.get_by_role("option", name="kdhulipalla13@gmail.com").click()
+    page.get_by_role("combobox", name="Change labels").click()
+    page.locator("[id=\"1feature\"] > .sc-gmHgPJ > .sc-iaHxGD").check()
+    page.locator(".sc-dzKBZk").click()
+    page.get_by_role("combobox", name="More actions").click()
+    page.get_by_text("Set due date⇧D▶").click()
+    page.get_by_text("Tomorrow").click()
+    page.get_by_role("combobox", name="More actions").click()
+
+    page.locator("#team-testing_multi_agent_ui").get_by_role("link", name="Projects").click()
+    page.get_by_role("button", name="Create new project").click()
+    page.get_by_role("combobox", name="Change project status").click()
+    page.get_by_role("option", name="Planned").click()
+    page.get_by_role("combobox", name="Change project priority").click()
+    page.get_by_role("option", name="High").click()
+    page.get_by_role("combobox", name="Set project lead").click()
+    page.locator(".sc-dzKBZk").click()
+    page.get_by_role("combobox", name="Set project lead").click()
+    page.locator(".sc-dzKBZk").click()
+    page.get_by_role("combobox", name="Change start date").click()
+    page.get_by_role("button", name="Friday, November 21st,").click()
+    page.get_by_role("combobox", name="Change target date").click()
+    page.get_by_role("button", name="Thursday, November 27th,").click()
+    page.locator(".sc-cXdnXt").click()
+    page.locator("div").filter(has_text=re.compile(r"^Milestones$")).nth(5).click()
+    page.get_by_role("button", name="Create project").click()

@@ -1,0 +1,6 @@
+{
+  "step_name": "open_team_board",
+  "description": "Open Linear team board and capture UI state.",
+  "url": "https://linear.app/testing-multi-agent-ui/team/TES/active",
+  "screenshot": "artifacts\\linear_demo\\step_01_team_board.png"
+}
