@@ -7,3 +7,5 @@ class AgentAState(TypedDict):
     screenshot_path: Optional[str]
     elements: List[Dict[str, Any]]
     instruction: Optional[str]
+    tried_ids: Optional[List[str]]
+    top_elements: List[Dict[str, Any]]

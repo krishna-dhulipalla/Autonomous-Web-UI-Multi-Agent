@@ -19,6 +19,8 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
         "screenshot_path": None,
         "elements": [],
         "instruction": None,
+        "tried_ids": [],
+        "top_elements": [],
     }
 
     run_id = uuid7()
@@ -35,3 +37,12 @@ def print_summary(user_query: str, final_state: AgentAState) -> None:
     print("Instruction:", final_state.get("instruction"))
     print("Screenshot:", final_state.get("screenshot_path"))
     print("Elements JSON:", OUT_DIR / "elements.json")
+    top = final_state.get("top_elements") or []
+    if top:
+        print("Top candidates (id, role, name, score):")
+        for e in top:
+            try:
+                score_val = float(e.get("score", 0.0))
+            except Exception:
+                score_val = 0.0
+            print(f"  - {e.get('id')} | {e.get('role')} | {e.get('name')} | score={score_val:.2f}")
