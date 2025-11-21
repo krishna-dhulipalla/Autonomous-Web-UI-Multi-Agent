@@ -1,0 +1,198 @@
+[
+  {
+    "type": "button",
+    "text": "TE\nTesting_multi_agent_UI"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "Inbox"
+  },
+  {
+    "type": "button",
+    "text": "My issues"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "Workspace"
+  },
+  {
+    "type": "button",
+    "text": "Projects"
+  },
+  {
+    "type": "button",
+    "text": "Views"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "More"
+  },
+  {
+    "type": "button",
+    "text": "Your teams"
+  },
+  {
+    "type": "button",
+    "text": "Testing_multi_agent_UI\nIssues\nProjects\nViews"
+  },
+  {
+    "type": "button",
+    "text": "Testing_multi_agent_UI"
+  },
+  {
+    "type": "button",
+    "text": "Try"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "Filter"
+  },
+  {
+    "type": "button",
+    "text": "Display"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "1"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "button",
+    "text": "4"
+  },
+  {
+    "type": "button",
+    "text": ""
+  },
+  {
+    "type": "link",
+    "text": "Skip to content"
+  },
+  {
+    "type": "link",
+    "text": "Inbox"
+  },
+  {
+    "type": "link",
+    "text": "My issues"
+  },
+  {
+    "type": "link",
+    "text": "Projects"
+  },
+  {
+    "type": "link",
+    "text": "Views"
+  },
+  {
+    "type": "link",
+    "text": "Issues"
+  },
+  {
+    "type": "link",
+    "text": "Projects"
+  },
+  {
+    "type": "link",
+    "text": "Views"
+  },
+  {
+    "type": "link",
+    "text": "Import issues"
+  },
+  {
+    "type": "link",
+    "text": "Link GitHub"
+  },
+  {
+    "type": "link",
+    "text": "All issues"
+  },
+  {
+    "type": "link",
+    "text": "Active"
+  },
+  {
+    "type": "link",
+    "text": "Backlog"
+  },
+  {
+    "type": "link",
+    "text": "TES-5\nMy test issue from Playwright\nTomorrow\nKD\nNov 19"
+  },
+  {
+    "type": "link",
+    "text": "TES-1\nGet familiar with Linear (1)\nNov 19"
+  },
+  {
+    "type": "link",
+    "text": "TES-2\nSet up your teams (2)\nNov 19"
+  },
+  {
+    "type": "link",
+    "text": "TES-3\nConnect your tools (3)\nNov 19"
+  },
+  {
+    "type": "link",
+    "text": "TES-4\nImport your data (4)\nNov 19"
+  }
+]
