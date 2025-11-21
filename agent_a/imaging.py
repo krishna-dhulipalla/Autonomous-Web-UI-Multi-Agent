@@ -1,4 +1,5 @@
 import base64
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -7,10 +8,18 @@ from PIL import Image, ImageDraw, ImageFont
 from .config import OUT_DIR
 
 
-def image_to_data_url(path: Path) -> str:
-    with open(path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode("utf-8")
-    return f"data:image/png;base64,{b64}"
+def image_to_data_url(path: Path, max_size: int = 960) -> str:
+    """Load image, optionally downscale to reduce token usage, return JPEG data URL."""
+    img = Image.open(path).convert("RGB")
+    w, h = img.size
+    if max(w, h) > max_size:
+        scale = max_size / max(w, h)
+        img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
+
+    buf = BytesIO()
+    img.save(buf, format="JPEG", quality=75)
+    b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+    return f"data:image/jpeg;base64,{b64}"
 
 
 def draw_ids_on_image(
@@ -48,4 +57,3 @@ def draw_ids_on_image(
     annotated_path = OUT_DIR / "annotated_topk.png"
     img.save(annotated_path)
     return annotated_path
-

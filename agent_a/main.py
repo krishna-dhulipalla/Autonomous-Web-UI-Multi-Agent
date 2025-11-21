@@ -1,33 +1,37 @@
-from typing import Optional
+from typing import List, Optional
 
-from .config import DEFAULT_GOAL_HINT, OUT_DIR
+from .config import OUT_DIR
 from .graph import build_graph
 from .types import AgentAState
+from langsmith import uuid7
+from dotenv import load_dotenv
+load_dotenv()
 
 
-def run(goal: Optional[str] = None) -> AgentAState:
-    goal_text = goal or DEFAULT_GOAL_HINT or "create a new project"
+def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -> AgentAState:
+    query = user_query or "create a new issue"
 
     app = build_graph()
+    print(f"[AgentA] Starting run with user query: {query}")
     initial_state: AgentAState = {
-        "goal": goal_text,
+        "user_query": query,
+        "history": history or [],
         "screenshot_path": None,
-        "annotated_path": None,
         "elements": [],
-        "top_elements": [],
-        "chosen_id": None,
-        "reason": None,
+        "instruction": None,
     }
 
-    final_state = app.invoke(initial_state)
+    run_id = uuid7()
+    
+    # Add a run label to make traces easier to read
+    final_state = app.invoke(initial_state, config={"run_id": run_id, "run_name": "agent_a_pipeline"})
+    print("[AgentA] Run completed")
     return final_state
 
 
-def print_summary(goal: str, final_state: AgentAState) -> None:
+def print_summary(user_query: str, final_state: AgentAState) -> None:
     print("\n=== Agent A result ===")
-    print("Goal:", goal)
-    print("Chosen id:", final_state["chosen_id"])
-    print("Reason:", final_state["reason"])
-    print("Annotated screenshot:", final_state["annotated_path"])
+    print("User query:", user_query)
+    print("Instruction:", final_state.get("instruction"))
+    print("Screenshot:", final_state.get("screenshot_path"))
     print("Elements JSON:", OUT_DIR / "elements.json")
-
