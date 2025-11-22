@@ -8,7 +8,7 @@ The implementation is split into modular components under agent_a/.
 from __future__ import annotations
 from agent_a.main import print_summary, run
 
-USER_QUERY = "create a new issue with title testing with agent A, which has priority high and deadline next week and keep remain same everything"  # hardcoded for now during development
+USER_QUERY = "create a new project with title testing, which has priority high with target set to next week and keep remain same everything"
 
 
 def main():

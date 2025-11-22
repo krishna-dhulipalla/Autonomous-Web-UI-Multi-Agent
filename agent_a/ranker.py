@@ -1,7 +1,7 @@
+import json
 from pathlib import Path
 from typing import List
 
-from .config import OUT_DIR
 from .scoring import persist_scored, select_top
 from .types import AgentAState
 
@@ -18,12 +18,11 @@ def score_elements(state: AgentAState) -> AgentAState:
     top_k, scored_all = select_top(elements, instruction, top_k=10, tried_ids=tried_ids)
 
     # Persist scored results alongside the existing metadata
-    meta_path = OUT_DIR / "elements.json"
+    run_dir = Path(state["run_dir"])
+    meta_path = run_dir / "elements.json"
     base_meta = {}
     if meta_path.exists():
         try:
-            import json
-
             base_meta = json.loads(meta_path.read_text(encoding="utf-8"))
         except Exception:
             base_meta = {}
@@ -35,4 +34,3 @@ def score_elements(state: AgentAState) -> AgentAState:
 
     state["top_elements"] = top_k
     return state
-
