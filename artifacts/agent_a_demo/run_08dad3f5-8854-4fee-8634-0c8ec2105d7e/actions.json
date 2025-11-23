@@ -1,0 +1,33 @@
+[
+  {
+    "actions": [
+      {
+        "action": "fill",
+        "target_id": "28",
+        "params": {
+          "text": "testing"
+        }
+      },
+      {
+        "action": "fill",
+        "target_id": "31",
+        "params": {
+          "text": "created by agent"
+        }
+      },
+      {
+        "action": "select",
+        "target_id": "24",
+        "params": {
+          "option": "Personal"
+        }
+      },
+      {
+        "action": "click",
+        "target_id": "23",
+        "params": {}
+      }
+    ],
+    "followup_hint": "Form filled and submitted\u2014expect the new view to be created."
+  }
+]

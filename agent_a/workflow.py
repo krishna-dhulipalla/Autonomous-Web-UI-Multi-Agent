@@ -13,16 +13,21 @@ def capture_ui(state: AgentAState) -> AgentAState:
     run_dir.mkdir(parents=True, exist_ok=True)
 
     print("[AgentA] Launching Playwright and loading page...")
-    p = sync_playwright().start()
-    context = p.chromium.launch_persistent_context(
-        PROFILE_DIR,
-        headless=False,
-        slow_mo=150,
-    )
-    page = context.new_page()
-
-    page.goto(TEAM_URL)
-    page.wait_for_timeout(4000)  # allow more time for the UI to settle
+    if state.get("page"):
+        print("[AgentA] Reusing existing browser session.")
+        page = state["page"]
+        context = state["context"]
+        p = state["playwright"]
+    else:
+        p = sync_playwright().start()
+        context = p.chromium.launch_persistent_context(
+            PROFILE_DIR,
+            headless=False,
+            slow_mo=150,
+        )
+        page = context.new_page()
+        page.goto(TEAM_URL)
+        page.wait_for_timeout(4000)  # allow more time for the UI to settle
 
     raw_screenshot = run_dir / "raw.png"
     page.screenshot(path=str(raw_screenshot), full_page=True)

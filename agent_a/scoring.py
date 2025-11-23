@@ -158,8 +158,35 @@ def select_top(elements: List[Dict], instruction: str, top_k: int = 10, tried_id
         e_copy = {k: e.get(k) for k in ("id", "role", "name", "landmark", "playwright_snippet")}
         e_copy["score"] = s
         scored.append(e_copy)
+
     scored_sorted = sorted(scored, key=lambda x: x["score"], reverse=True)
-    return scored_sorted[:top_k], scored_sorted
+
+    selected = []
+    used_ids = set()
+
+    # baseline top_k
+    for e in scored_sorted:
+        if len(selected) >= top_k:
+            break
+        selected.append(e)
+        used_ids.add(e["id"])
+
+    instr_lc = instruction.lower()
+    # ensure some textboxes for fill instructions
+    if any(tok in instr_lc for tok in ["fill", "title", "description", "field"]):
+        textboxes = [e for e in scored_sorted if e.get("role") == "textbox" and e["id"] not in used_ids]
+        for e in textboxes[:3]:
+            selected.append(e)
+            used_ids.add(e["id"])
+
+    # ensure some comboboxes for select instructions
+    if any(tok in instr_lc for tok in ["select", "dropdown", "choose", "option"]):
+        combos = [e for e in scored_sorted if e.get("role") == "combobox" and e["id"] not in used_ids]
+        for e in combos[:2]:
+            selected.append(e)
+            used_ids.add(e["id"])
+
+    return selected, scored_sorted
 
 
 def persist_scored(out_path: Path, base_meta: Dict, scored_all: List[Dict], top_k: List[Dict]) -> None:

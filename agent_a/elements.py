@@ -40,9 +40,10 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
             locator_call = (
                 f'get_by_role("{role}", name={name!r})'
                 if name
-                else f'get_by_role("{role}")'
+                else f'get_by_role("{role}").nth({i})'
             )
-            if landmark:
+            if landmark and name:
+                # Only use landmark if we have a name, otherwise nth(i) is safer globally for the role
                 snippet = f'page.get_by_role("{landmark}").{locator_call}'
             else:
                 snippet = f"page.{locator_call}"
@@ -59,7 +60,37 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
                 }
             )
 
-    return elements
+    # De-duplication: Group by spatial location (rounded to nearest 2px to catch sub-pixel diffs)
+    spatial_map: Dict[str, List[Dict[str, Any]]] = {}
+    for e in elements:
+        box = e["bounding_box"]
+        # Create a spatial key
+        key = f"{round(box['x'] / 2)}_{round(box['y'] / 2)}_{round(box['width'] / 2)}_{round(box['height'] / 2)}"
+        if key not in spatial_map:
+            spatial_map[key] = []
+        spatial_map[key].append(e)
+
+    unique_elements = []
+    for key, group in spatial_map.items():
+        if len(group) == 1:
+            unique_elements.append(group[0])
+        else:
+            # Pick the best one: prefer longest name, then specific roles
+            # Sort by: has_name (desc), name_len (desc), role_priority (desc)
+            def sort_key(x):
+                has_name = bool(x["name"])
+                name_len = len(x["name"]) if x["name"] else 0
+                role_prio = 1 if x["role"] in ("button", "textbox", "combobox") else 0
+                return (has_name, name_len, role_prio)
+
+            group.sort(key=sort_key, reverse=True)
+            unique_elements.append(group[0])
+
+    # Re-index IDs to be continuous after filtering
+    for i, e in enumerate(unique_elements):
+        e["id"] = str(i)
+
+    return unique_elements
 
 
 def score_element(elem: Dict[str, Any], goal_hint: Optional[str]) -> float:

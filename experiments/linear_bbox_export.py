@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 from PIL import Image, ImageDraw, ImageFont
 from playwright.sync_api import sync_playwright
 
-TEAM_URL = "https://linear.app/testing-multi-agent-ui/team/TES/active"
+TEAM_URL = "https://linear.app/testing-multi-agent-ui/team/TES/views/issues/new"
 PROFILE_DIR = "playwright_profile"
 
 OUT_DIR = Path("artifacts/linear_bbox/test_scored")
@@ -83,7 +83,8 @@ def nearest_landmark(el) -> Optional[str]:
     }
 
     # explicit ARIA landmark roles
-    explicit_roles = ["main", "region", "navigation", "complementary", "banner", "contentinfo"]
+    explicit_roles = ["main", "region", "navigation",
+                      "complementary", "banner", "contentinfo"]
 
     # 1. Try explicit roles (role="main")
     for role in explicit_roles:
@@ -289,7 +290,7 @@ def run():
             slow_mo=150,
         )
         page = context.new_page()
-        
+
         # If it's your first run, login once; later runs will reuse session
         # page.goto("https://linear.app/")
         # print("dY`% If needed, log in to Linear in the browser window.")
@@ -310,9 +311,11 @@ def run():
 
         # 3) Score + select top-K for agent view
         top_elements = select_top_elements(elements, GOAL_HINT, TOP_K)
-        selected_ids = [e["id"] for e in elements if e.get("selected_for_agent")]
+        selected_ids = [e["id"]
+                        for e in elements if e.get("selected_for_agent")]
 
-        print(f"   Selected {len(selected_ids)} elements for agent view (TOP_K={TOP_K})")
+        print(
+            f"   Selected {len(selected_ids)} elements for agent view (TOP_K={TOP_K})")
 
         # 4) Save metadata JSON (all elements, with scores & selected flag)
         meta_path = OUT_DIR / "step_01_elements.json"
@@ -328,7 +331,8 @@ def run():
         print(f"🧾 Metadata saved → {meta_path}")
 
         # 5) Draw bounding boxes only for selected elements
-        annotated_path = draw_bboxes_on_image(raw_screenshot, elements, draw_only_selected=True)
+        annotated_path = draw_bboxes_on_image(
+            raw_screenshot, elements, draw_only_selected=True)
         print(f"🖼 Annotated screenshot (selected only) → {annotated_path}")
 
         input("\nPress Enter to exit… (browser stays open)")

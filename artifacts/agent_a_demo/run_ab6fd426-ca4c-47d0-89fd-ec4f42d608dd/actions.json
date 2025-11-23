@@ -1,0 +1,28 @@
+[
+  {
+    "action": "fill",
+    "target_id": "49",
+    "params": {
+      "text": "testing2"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "50",
+    "params": {
+      "text": "created by multi-agent"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "49",
+    "params": {
+      "option": "personal"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "23",
+    "params": {}
+  }
+]

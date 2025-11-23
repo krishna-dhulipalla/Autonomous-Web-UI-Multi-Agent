@@ -1,7 +1,7 @@
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from playwright.sync_api import TimeoutError
 
@@ -42,7 +42,11 @@ def _safe_click(locator):
     locator.click(timeout=5000)
 
 
-def _safe_fill(locator, text: str):
+def _safe_fill(locator, text: str, role: str = ""):
+    # Fail fast if role is clearly not fillable
+    if role and role in ("button", "link", "tab", "menuitem", "switch"):
+        raise RuntimeError(f"Cannot fill element with role '{role}'")
+
     try:
         if locator.count() > 1:
             locator = locator.nth(0)
@@ -74,14 +78,10 @@ def _safe_select(page, locator, option: str):
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
-    """Resolve id -> snippet, run the requested action, take after screenshot."""
-    plan = state.get("action_plan") or {}
-    target_id = plan.get("target_id")
-    action = plan.get("action")
-    params = plan.get("params") or {}
-
-    if not target_id or not action:
-        raise RuntimeError(f"Invalid action plan: {plan}")
+    """Resolve ids -> snippets, run requested actions, take after screenshot."""
+    actions: List[Dict[str, Any]] = state.get("actions") or []
+    if not actions:
+        raise RuntimeError("No actions to execute.")
 
     run_dir = Path(state["run_dir"])
     meta_path = run_dir / "elements.json"
@@ -89,60 +89,60 @@ def execute_plan(state: AgentAState) -> AgentAState:
         raise RuntimeError(f"Metadata file missing: {meta_path}")
 
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
-    elem = _resolve_element(meta, target_id)
-    snippet = elem.get("playwright_snippet")
-    if not snippet:
-        raise RuntimeError(f"No snippet for element id {target_id}")
-
-    print(f"[Executor] Action: {action} on id={target_id} name={elem.get('name')}")
-
     page = state.get("page")
     context = state.get("context")
     if page is None or context is None:
         raise RuntimeError("No live page/context found in state for execution.")
 
-    locator = _get_locator(page, snippet)
+    for idx, plan in enumerate(actions, start=1):
+        target_id = plan.get("target_id")
+        action = plan.get("action")
+        params = plan.get("params") or {}
+        if not target_id or not action:
+            raise RuntimeError(f"Invalid action plan at index {idx}: {plan}")
 
-    start = time.time()
-    try:
-        if action == "click":
-            _safe_click(locator)
-        elif action == "fill":
-            text = params.get("text") or params.get("value") or ""
-            if not text:
-                raise RuntimeError("Fill action missing text param")
-            _safe_fill(locator, text)
-        elif action == "select":
-            option = params.get("option") or params.get("value")
-            if not option:
-                raise RuntimeError("Select action missing option param")
-            _safe_select(page, locator, option)
-        elif action == "press":
-            key = params.get("key") or params.get("keys")
-            if not key:
-                raise RuntimeError("Press action missing key param")
-            locator.press(key, timeout=5000)
-        else:
-            raise RuntimeError(f"Unknown action type: {action}")
-        page.wait_for_timeout(300)
-        duration = time.time() - start
-        print(f"[Executor] Action succeeded in {duration:.2f}s")
-    except TimeoutError as e:
-        print(f"[Executor] Timeout on action {action}: {e}")
-        raise
+        elem = _resolve_element(meta, target_id)
+        snippet = elem.get("playwright_snippet")
+        if not snippet:
+            raise RuntimeError(f"No snippet for element id {target_id}")
+
+        print(f"[Executor] Action {idx}/{len(actions)}: {action} on id={target_id} name={elem.get('name')}")
+
+        locator = _get_locator(page, snippet)
+
+        start = time.time()
+        try:
+            if action == "click":
+                _safe_click(locator)
+            elif action == "fill":
+                text = params.get("text") or params.get("value") or ""
+                if not text:
+                    raise RuntimeError("Fill action missing text param")
+                _safe_fill(locator, text, role=elem.get("role"))
+            elif action == "select":
+                option = params.get("option") or params.get("value")
+                if not option:
+                    raise RuntimeError("Select action missing option param")
+                _safe_select(page, locator, option)
+            elif action == "press":
+                key = params.get("key") or params.get("keys")
+                if not key:
+                    raise RuntimeError("Press action missing key param")
+                locator.press(key, timeout=5000)
+            else:
+                raise RuntimeError(f"Unknown action type: {action}")
+            page.wait_for_timeout(300)
+            duration = time.time() - start
+            print(f"[Executor] Action succeeded in {duration:.2f}s")
+        except Exception as e:
+            duration = time.time() - start
+            print(f"[Executor] Action failed (skipping) in {duration:.2f}s: {e}")
+            continue
 
     after_path = run_dir / "after_action.png"
     page.screenshot(path=str(after_path), full_page=True)
     print(f"[Executor] After-action screenshot: {after_path}")
 
-    # Keep browser open for inspection until user closes
-    input("[Executor] Press Enter to close the browser...")
-    context.close()
-    if state.get("playwright"):
-        try:
-            state["playwright"].stop()
-        except Exception:
-            pass
-
+    # Browser stays open for the next step in the loop
     state["after_screenshot"] = str(after_path)
     return state

@@ -17,7 +17,8 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
     print(f"[AgentA] Starting run with user query: {query}")
     run_id = str(uuid4())
     run_dir = OUT_DIR / f"run_{run_id}"
-    initial_state: AgentAState = {
+    # Initial state
+    state: AgentAState = {
         "run_id": run_id,
         "run_dir": str(run_dir),
         "user_query": query,
@@ -25,18 +26,28 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
         "screenshot_path": None,
         "elements": [],
         "instruction": None,
+        "plan_steps": None,
         "tried_ids": [],
         "top_elements": [],
-        "action_plan": None,
+        "actions": [],
         "after_screenshot": None,
         "playwright": None,
         "context": None,
         "page": None,
+        "step": 0,
+        "done": False,
     }
 
-    # Add a run label to make traces easier to read (let LangGraph manage run IDs)
-    final_state = app.invoke(initial_state, config={"run_name": "agent_a_pipeline"})
+    # Run the graph (it loops internally until done)
+    final_state = app.invoke(state, config={"run_name": "agent_a_pipeline", "recursion_limit": 50})
     print("[AgentA] Run completed")
+    
+    # Cleanup
+    if final_state.get("context"):
+        final_state["context"].close()
+    if final_state.get("playwright"):
+        final_state["playwright"].stop()
+        
     return final_state
 
 
@@ -56,8 +67,10 @@ def print_summary(user_query: str, final_state: AgentAState) -> None:
             except Exception:
                 score_val = 0.0
             print(f"  - {e.get('id')} | {e.get('role')} | {e.get('name')} | score={score_val:.2f}")
-    plan = final_state.get("action_plan")
-    if plan:
-        print("Action plan:", plan)
+    actions = final_state.get("actions") or []
+    if actions:
+        print("Actions:")
+        for a in actions:
+            print(f"  - {a}")
     if final_state.get("after_screenshot"):
         print("After-action screenshot:", final_state.get("after_screenshot"))
