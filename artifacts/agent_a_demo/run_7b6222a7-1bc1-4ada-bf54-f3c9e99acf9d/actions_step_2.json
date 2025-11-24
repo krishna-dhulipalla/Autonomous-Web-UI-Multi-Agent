@@ -1,0 +1,44 @@
+[
+  {
+    "action": "fill",
+    "target_id": "39",
+    "params": {
+      "text": "testing_issue 1"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "40",
+    "params": {
+      "text": "created by multi-agent with playwright"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "42",
+    "params": {
+      "option": "High"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "43",
+    "params": {
+      "option": "kdhulipalla13@gmail.com"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "40",
+    "params": {
+      "text": "improvement"
+    }
+  },
+  {
+    "action": "press",
+    "target_id": "2",
+    "params": {
+      "key": "Enter"
+    }
+  }
+]

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Core destinations
-TEAM_URL = "https://linear.app/testing-multi-agent-ui/team/TES/views/issues/new"
+TEAM_URL = "https://linear.app/testing-multi-agent-ui/projects/all"
 PROFILE_DIR = "playwright_profile"
 
 # Output paths

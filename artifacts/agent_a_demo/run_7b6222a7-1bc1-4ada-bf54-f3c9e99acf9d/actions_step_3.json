@@ -1,0 +1,14 @@
+[
+  {
+    "action": "fill",
+    "target_id": "0",
+    "params": {
+      "text": "next week"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "29",
+    "params": {}
+  }
+]

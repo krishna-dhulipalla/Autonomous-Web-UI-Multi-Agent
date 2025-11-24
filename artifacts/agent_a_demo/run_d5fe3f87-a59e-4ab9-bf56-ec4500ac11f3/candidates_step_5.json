@@ -1,0 +1,82 @@
+[
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "score": 10.525
+  },
+  {
+    "id": "21",
+    "role": "button",
+    "name": "1",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='1')",
+    "score": 10.02542372881356
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Create new issue",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+    "score": 9.076271186440678
+  },
+  {
+    "id": "45",
+    "role": "textbox",
+    "name": "Issue title",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"textbox\", name='Issue title')",
+    "score": 9.050847457627118
+  },
+  {
+    "id": "35",
+    "role": "link",
+    "name": "Created",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Created')",
+    "score": 9.02542372881356
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Search workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+    "score": 9.0
+  },
+  {
+    "id": "28",
+    "role": "button",
+    "name": "Create issue",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"button\", name='Create issue')",
+    "score": 8.550847457627118
+  },
+  {
+    "id": "0",
+    "role": "button",
+    "name": "Testing_multi_agent_UI Workspace Menu",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+    "score": 8.07258064516129
+  },
+  {
+    "id": "5",
+    "role": "button",
+    "name": "Workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+    "score": 8.0
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "score": 8.0
+  }
+]

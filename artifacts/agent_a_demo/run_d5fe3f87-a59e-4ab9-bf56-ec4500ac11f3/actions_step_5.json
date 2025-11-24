@@ -1,0 +1,21 @@
+[
+  {
+    "action": "fill",
+    "target_id": "45",
+    "params": {
+      "text": "kdhulipalla13@gmail.com"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "45",
+    "params": {
+      "text": "improvement"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "2",
+    "params": {}
+  }
+]

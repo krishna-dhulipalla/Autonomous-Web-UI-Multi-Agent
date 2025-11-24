@@ -99,6 +99,7 @@ def agent_b(state: AgentAState) -> AgentAState:
             "====================\n"
             "- Match by label/accessibility name and role first. Prefer visible, enabled controls.\n"
             "- If multiple candidates look valid, choose the one that best fits context (e.g., in a form region or modal).\n"
+            "- **CRITICAL**: For forms, map fields CAREFULLY. Do not put 'Due date' into 'Description'. Check labels closely.\n"
             "- Do NOT invent target_ids. Use only the provided candidates.\n"
             "- Keep the action list short and strictly necessary. No exploratory clicks.\n"
             "\n"
@@ -187,7 +188,8 @@ def agent_b(state: AgentAState) -> AgentAState:
 
     # Persist actions for debugging
     run_dir = Path(state.get("run_dir", "."))
-    actions_path = run_dir / "actions.json"
+    step = state.get("step", 0)
+    actions_path = run_dir / f"actions_step_{step}.json"
     try:
         actions_path.write_text(json.dumps(normalized_actions, indent=2), encoding="utf-8")
     except Exception as e:

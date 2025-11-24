@@ -1,0 +1,82 @@
+[
+  {
+    "id": "17",
+    "role": "button",
+    "name": "Add new view",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add new view')",
+    "score": 10.048387096774194
+  },
+  {
+    "id": "23",
+    "role": "button",
+    "name": "Create new project",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Create new project')",
+    "score": 9.6
+  },
+  {
+    "id": "19",
+    "role": "button",
+    "name": "Add project",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add project')",
+    "score": 9.5
+  },
+  {
+    "id": "21",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "score": 9.5
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "score": 8.5
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Create new issue",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+    "score": 8.155172413793103
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Search workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+    "score": 8.0
+  },
+  {
+    "id": "24",
+    "role": "link",
+    "name": "Issues",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Issues')",
+    "score": 7.551724137931035
+  },
+  {
+    "id": "16",
+    "role": "button",
+    "name": "Open Help menu",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"button\", name='Open Help menu')",
+    "score": 7.1
+  },
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Copy page URL",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Copy page URL')",
+    "score": 7.048387096774194
+  }
+]

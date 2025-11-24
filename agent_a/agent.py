@@ -175,5 +175,14 @@ def agent_a(state: AgentAState) -> AgentAState:
 
     state["instruction"] = instruction
     state["plan_steps"] = plan_steps
+    
+    # Check for completion signals
+    done = False
+    if plan_steps and isinstance(plan_steps, dict) and plan_steps.get("done"):
+        done = True
+    elif "goal completed" in instruction.lower():
+        done = True
+    state["done"] = done
+    
     print(f"[AgentA] Model returned instruction: {instruction}")
     return state

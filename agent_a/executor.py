@@ -53,6 +53,20 @@ def _safe_fill(locator, text: str, role: str = ""):
     except Exception:
         pass
     locator.wait_for(state="visible", timeout=5000)
+    
+    # Check if editable
+    try:
+        is_editable = locator.is_editable(timeout=1000)
+        if not is_editable:
+             # Try to click first, sometimes that makes it editable
+            locator.click(timeout=1000)
+            is_editable = locator.is_editable(timeout=1000)
+            if not is_editable:
+                raise RuntimeError(f"Element is not editable (role={role})")
+    except Exception:
+        # If check fails, proceed with caution (might be contenteditable div)
+        pass
+
     try:
         locator.click(timeout=5000)
         locator.fill(text, timeout=5000)
@@ -81,7 +95,8 @@ def execute_plan(state: AgentAState) -> AgentAState:
     """Resolve ids -> snippets, run requested actions, take after screenshot."""
     actions: List[Dict[str, Any]] = state.get("actions") or []
     if not actions:
-        raise RuntimeError("No actions to execute.")
+        print("[Executor] No actions to execute (no-op).")
+        return state
 
     run_dir = Path(state["run_dir"])
     meta_path = run_dir / "elements.json"

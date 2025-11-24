@@ -8,7 +8,7 @@ The implementation is split into modular components under agent_a/.
 from __future__ import annotations
 from agent_a.main import print_summary, run
 
-USER_QUERY = "Create a new issue with title 'testing_issue', description 'created by multi-agent with', set priority 'high', set assignee 'kdhulipalla13@gmail.com', set label as 'improvement' and set due date next week and then save it."
+USER_QUERY = "Create a new issue with title 'testing_issue 1', description 'created by multi-agent with playwright', set priority 'high', set assignee 'kdhulipalla13@gmail.com', set label as 'improvement' and set due date next week and then save it."
 
 
 def main():

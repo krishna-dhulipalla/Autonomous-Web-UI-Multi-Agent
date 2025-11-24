@@ -1,0 +1,40 @@
+[
+  {
+    "action": "click",
+    "target_id": "29",
+    "params": {}
+  },
+  {
+    "action": "fill",
+    "target_id": "2",
+    "params": {
+      "text": "kdhulipalla13@gmail.com"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "2",
+    "params": {
+      "text": "improvement"
+    }
+  },
+  {
+    "action": "fill",
+    "target_id": "2",
+    "params": {
+      "text": "next week"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "2",
+    "params": {
+      "option": "High"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "2",
+    "params": {}
+  }
+]

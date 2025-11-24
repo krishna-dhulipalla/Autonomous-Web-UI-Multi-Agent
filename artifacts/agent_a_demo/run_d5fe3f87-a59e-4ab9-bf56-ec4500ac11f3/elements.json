@@ -1,0 +1,777 @@
+{
+  "url": "https://linear.app/testing-multi-agent-ui/my-issues/assigned",
+  "screenshot": "artifacts\\agent_a_demo\\run_d5fe3f87-a59e-4ab9-bf56-ec4500ac11f3\\raw.png",
+  "user_query": "Create a new issue with title 'testing_issue 1', description 'created by multi-agent with playwright', set priority 'high', set assignee 'kdhulipalla13@gmail.com', set label as 'improvement' and set due date next week and then save it.",
+  "elements": [
+    {
+      "id": "0",
+      "role": "button",
+      "name": "Testing_multi_agent_UI Workspace Menu",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 14.000000953674316,
+        "width": 143.99999904632568,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+      "name_hint": "Testing_multi_agent_UI Workspa..."
+    },
+    {
+      "id": "1",
+      "role": "button",
+      "name": "Search workspace",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 166,
+        "y": 14.000000953674316,
+        "width": 28.000015258789062,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+      "name_hint": "Search workspace"
+    },
+    {
+      "id": "2",
+      "role": "button",
+      "name": "Create new issue",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 202.00001525878906,
+        "y": 14.000000953674316,
+        "width": 28,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+      "name_hint": "Create new issue"
+    },
+    {
+      "id": "3",
+      "role": "button",
+      "name": "Inbox",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 53.000003814697266,
+        "width": 215.71429347991943,
+        "height": 27.999996185302734
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Inbox')",
+      "name_hint": "Inbox"
+    },
+    {
+      "id": "4",
+      "role": "button",
+      "name": "My issues",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 82,
+        "width": 215.71429347991943,
+        "height": 28.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='My issues')",
+      "name_hint": "My issues"
+    },
+    {
+      "id": "5",
+      "role": "button",
+      "name": "Workspace",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 127.00000762939453,
+        "width": 215.71429347991943,
+        "height": 23.99999237060547
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+      "name_hint": "Workspace"
+    },
+    {
+      "id": "6",
+      "role": "button",
+      "name": "Projects",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 153.04464721679688,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Projects')",
+      "name_hint": "Projects"
+    },
+    {
+      "id": "7",
+      "role": "button",
+      "name": "Views",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 182.04464721679688,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Views')",
+      "name_hint": "Views"
+    },
+    {
+      "id": "8",
+      "role": "button",
+      "name": "Show more workspace links",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 211.04464721679688,
+        "width": 64.13393306732178,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+      "name_hint": "Show more workspace links"
+    },
+    {
+      "id": "9",
+      "role": "button",
+      "name": "Your teams",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 256.0446472167969,
+        "width": 215.71429347991943,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Your teams')",
+      "name_hint": "Your teams"
+    },
+    {
+      "id": "10",
+      "role": "button",
+      "name": "Testing_multi_agent_UI\nIssues\nProjects\nViews",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 282.08929443359375,
+        "width": 215.71429347991943,
+        "height": 122
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI\\nIssues\\nProjects\\nViews')",
+      "name_hint": "Testing_multi_agent_UI\nIssues\n..."
+    },
+    {
+      "id": "11",
+      "role": "button",
+      "name": "Testing_multi_agent_UI",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 282.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI')",
+      "name_hint": "Testing_multi_agent_UI"
+    },
+    {
+      "id": "12",
+      "role": "button",
+      "name": "Try",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 420.08929443359375,
+        "width": 215.71429347991943,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Try')",
+      "name_hint": "Try"
+    },
+    {
+      "id": "13",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 448.1339416503906,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "14",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 477.1339416503906,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "15",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 506.1339416503906,
+        "width": 24,
+        "height": 24.000030517578125
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "16",
+      "role": "button",
+      "name": "Open Help menu",
+      "landmark": null,
+      "bounding_box": {
+        "x": 10,
+        "y": 686.0000610351562,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Open Help menu')",
+      "name_hint": "Open Help menu"
+    },
+    {
+      "id": "17",
+      "role": "button",
+      "name": "Open details",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 1223.4285888671875,
+        "y": 16.071430206298828,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Open details')",
+      "name_hint": "Open details"
+    },
+    {
+      "id": "18",
+      "role": "button",
+      "name": "Add filter",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 268.5714416503906,
+        "y": 54.78571701049805,
+        "width": 70.09820556640625,
+        "height": 24.000003814697266
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+      "name_hint": "Add filter"
+    },
+    {
+      "id": "19",
+      "role": "button",
+      "name": "Display options",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 1168.1607666015625,
+        "y": 54.78571701049805,
+        "width": 79.267822265625,
+        "height": 24.000003814697266
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+      "name_hint": "Display options"
+    },
+    {
+      "id": "20",
+      "role": "button",
+      "name": "Collapse group",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 247.57144165039062,
+        "y": 92.5714340209961,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Collapse group')",
+      "name_hint": "Collapse group"
+    },
+    {
+      "id": "21",
+      "role": "button",
+      "name": "1",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 360.3750305175781,
+        "y": 92.5714340209961,
+        "width": 8.428558349609375,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='1')",
+      "name_hint": "1"
+    },
+    {
+      "id": "22",
+      "role": "button",
+      "name": "Collapse group",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 247.57144165039062,
+        "y": 172.57144165039062,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Collapse group')",
+      "name_hint": "Collapse group"
+    },
+    {
+      "id": "23",
+      "role": "button",
+      "name": "2\n2",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 358.4464416503906,
+        "y": 172.57144165039062,
+        "width": 8.4285888671875,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='2\\n2')",
+      "name_hint": "2\n2"
+    },
+    {
+      "id": "24",
+      "role": "button",
+      "name": "Save draft",
+      "landmark": null,
+      "bounding_box": {
+        "x": 842.482177734375,
+        "y": 108.5714340209961,
+        "width": 91.9464111328125,
+        "height": 24.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Save draft')",
+      "name_hint": "Save draft"
+    },
+    {
+      "id": "25",
+      "role": "button",
+      "name": "Expand",
+      "landmark": null,
+      "bounding_box": {
+        "x": 940.4285888671875,
+        "y": 106.5714340209961,
+        "width": 28,
+        "height": 28.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Expand')",
+      "name_hint": "Expand"
+    },
+    {
+      "id": "26",
+      "role": "button",
+      "name": "Close",
+      "landmark": null,
+      "bounding_box": {
+        "x": 974.4285888671875,
+        "y": 106.5714340209961,
+        "width": 28,
+        "height": 28.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Close')",
+      "name_hint": "Close"
+    },
+    {
+      "id": "27",
+      "role": "button",
+      "name": "Set team",
+      "landmark": null,
+      "bounding_box": {
+        "x": 277.5714416503906,
+        "y": 108.5714340209961,
+        "width": 55.883941650390625,
+        "height": 24.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Set team')",
+      "name_hint": "Set team"
+    },
+    {
+      "id": "28",
+      "role": "button",
+      "name": "Apply quick suggestion",
+      "landmark": null,
+      "bounding_box": {
+        "x": 277.5714416503906,
+        "y": 259.76788330078125,
+        "width": 28,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Apply quick suggestion')",
+      "name_hint": "Apply quick suggestion"
+    },
+    {
+      "id": "29",
+      "role": "button",
+      "name": "Apply suggested \"Improvement\" label",
+      "landmark": null,
+      "bounding_box": {
+        "x": 432.0446472167969,
+        "y": 261.76788330078125,
+        "width": 103.08932495117188,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Apply suggested \"Improvement\" label')",
+      "name_hint": "Apply suggested \"Improvement\" ..."
+    },
+    {
+      "id": "30",
+      "role": "button",
+      "name": "Attach images, files or videos",
+      "landmark": null,
+      "bounding_box": {
+        "x": 277.5714416503906,
+        "y": 348.33929443359375,
+        "width": 28,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Attach images, files or videos')",
+      "name_hint": "Attach images, files or videos"
+    },
+    {
+      "id": "31",
+      "role": "button",
+      "name": "Create issue",
+      "landmark": null,
+      "bounding_box": {
+        "x": 901.6607666015625,
+        "y": 348.33929443359375,
+        "width": 100.767822265625,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Create issue')",
+      "name_hint": "Create issue"
+    },
+    {
+      "id": "32",
+      "role": "link",
+      "name": "Issues",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 311.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Issues')",
+      "name_hint": "Issues"
+    },
+    {
+      "id": "33",
+      "role": "link",
+      "name": "Projects",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 340.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Projects')",
+      "name_hint": "Projects"
+    },
+    {
+      "id": "34",
+      "role": "link",
+      "name": "Views",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 369.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Views')",
+      "name_hint": "Views"
+    },
+    {
+      "id": "35",
+      "role": "link",
+      "name": "Import issues",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 446.1339416503906,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Import issues')",
+      "name_hint": "Import issues"
+    },
+    {
+      "id": "36",
+      "role": "link",
+      "name": "Link GitHub",
+      "landmark": "navigation",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 504.1339416503906,
+        "width": 215.71429347991943,
+        "height": 28.000030517578125
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Link GitHub')",
+      "name_hint": "Link GitHub"
+    },
+    {
+      "id": "37",
+      "role": "link",
+      "name": "Assigned",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 351.20538330078125,
+        "y": 16.071430206298828,
+        "width": 70.67855834960938,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Assigned')",
+      "name_hint": "Assigned"
+    },
+    {
+      "id": "38",
+      "role": "link",
+      "name": "Created",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 429.8839416503906,
+        "y": 16.071430206298828,
+        "width": 62.767852783203125,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Created')",
+      "name_hint": "Created"
+    },
+    {
+      "id": "39",
+      "role": "link",
+      "name": "Subscribed",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 500.65179443359375,
+        "y": 16.071430206298828,
+        "width": 82.57147216796875,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Subscribed')",
+      "name_hint": "Subscribed"
+    },
+    {
+      "id": "40",
+      "role": "link",
+      "name": "Activity",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 591.2232666015625,
+        "y": 16.071430206298828,
+        "width": 60.75,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Activity')",
+      "name_hint": "Activity"
+    },
+    {
+      "id": "41",
+      "role": "link",
+      "name": "TES-5\nMy test issue from Playwright\nNov 26\nKD\nNov 19",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 244.57144165039062,
+        "y": 122.5714340209961,
+        "width": 1026.8571472167969,
+        "height": 44.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='TES-5\\nMy test issue from Playwright\\nNov 26\\nKD\\nNov 19')",
+      "name_hint": "TES-5\nMy test issue from Playw..."
+    },
+    {
+      "id": "42",
+      "role": "link",
+      "name": "TES-6\nnext week\nKD\nNov 23",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 244.57144165039062,
+        "y": 202.57144165039062,
+        "width": 1026.8571472167969,
+        "height": 44
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='TES-6\\nnext week\\nKD\\nNov 23')",
+      "name_hint": "TES-6\nnext week\nKD\nNov 23"
+    },
+    {
+      "id": "43",
+      "role": "link",
+      "name": "TES-7\nnext week\nKD\nNov 23",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 244.57144165039062,
+        "y": 246.57144165039062,
+        "width": 1026.8571472167969,
+        "height": 44
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='TES-7\\nnext week\\nKD\\nNov 23')",
+      "name_hint": "TES-7\nnext week\nKD\nNov 23"
+    },
+    {
+      "id": "44",
+      "role": "checkbox",
+      "name": "",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 252.57144165039062,
+        "y": 137.57144165039062,
+        "width": 14,
+        "height": 14
+      },
+      "playwright_snippet": "page.get_by_role(\"checkbox\").nth(0)",
+      "name_hint": ""
+    },
+    {
+      "id": "45",
+      "role": "checkbox",
+      "name": "",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 252.57144165039062,
+        "y": 217.57144165039062,
+        "width": 14,
+        "height": 14
+      },
+      "playwright_snippet": "page.get_by_role(\"checkbox\").nth(1)",
+      "name_hint": ""
+    },
+    {
+      "id": "46",
+      "role": "checkbox",
+      "name": "",
+      "landmark": "main",
+      "bounding_box": {
+        "x": 252.57144165039062,
+        "y": 261.5714416503906,
+        "width": 14,
+        "height": 14
+      },
+      "playwright_snippet": "page.get_by_role(\"checkbox\").nth(2)",
+      "name_hint": ""
+    },
+    {
+      "id": "47",
+      "role": "checkbox",
+      "name": "",
+      "landmark": null,
+      "bounding_box": {
+        "x": 791.5178833007812,
+        "y": 355.83929443359375,
+        "width": 22,
+        "height": 14
+      },
+      "playwright_snippet": "page.get_by_role(\"checkbox\").nth(3)",
+      "name_hint": ""
+    },
+    {
+      "id": "48",
+      "role": "textbox",
+      "name": "Issue title",
+      "landmark": null,
+      "bounding_box": {
+        "x": 283.5714416503906,
+        "y": 144.57144165039062,
+        "width": 712.8571472167969,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"textbox\", name='Issue title')",
+      "name_hint": "Issue title"
+    },
+    {
+      "id": "49",
+      "role": "textbox",
+      "name": "Issue description",
+      "landmark": null,
+      "bounding_box": {
+        "x": 283.5714416503906,
+        "y": 174.57144165039062,
+        "width": 712.8571472167969,
+        "height": 79.19642639160156
+      },
+      "playwright_snippet": "page.get_by_role(\"textbox\", name='Issue description')",
+      "name_hint": "Issue description"
+    },
+    {
+      "id": "50",
+      "role": "combobox",
+      "name": "Change status",
+      "landmark": null,
+      "bounding_box": {
+        "x": 277.5714416503906,
+        "y": 299.76788330078125,
+        "width": 78.91070556640625,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"combobox\", name='Change status')",
+      "name_hint": "Change status"
+    },
+    {
+      "id": "51",
+      "role": "combobox",
+      "name": "Change priority. No priority is selected",
+      "landmark": null,
+      "bounding_box": {
+        "x": 362.4821472167969,
+        "y": 299.76788330078125,
+        "width": 76.4285888671875,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"combobox\", name='Change priority. No priority is selected')",
+      "name_hint": "Change priority. No priority i..."
+    },
+    {
+      "id": "52",
+      "role": "combobox",
+      "name": "Change assignee. Currently kdhulipalla13@gmail.com is assigned.",
+      "landmark": null,
+      "bounding_box": {
+        "x": 444.9107360839844,
+        "y": 299.76788330078125,
+        "width": 176.66964721679688,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"combobox\", name='Change assignee. Currently kdhulipalla13@gmail.com is assigned.')",
+      "name_hint": "Change assignee. Currently kdh..."
+    },
+    {
+      "id": "53",
+      "role": "combobox",
+      "name": "Change labels",
+      "landmark": null,
+      "bounding_box": {
+        "x": 627.5803833007812,
+        "y": 299.76788330078125,
+        "width": 32,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"combobox\", name='Change labels')",
+      "name_hint": "Change labels"
+    },
+    {
+      "id": "54",
+      "role": "combobox",
+      "name": "More actions",
+      "landmark": null,
+      "bounding_box": {
+        "x": 665.5803833007812,
+        "y": 299.76788330078125,
+        "width": 32,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"combobox\", name='More actions')",
+      "name_hint": "More actions"
+    }
+  ]
+}

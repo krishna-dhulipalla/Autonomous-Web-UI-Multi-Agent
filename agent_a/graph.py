@@ -26,7 +26,18 @@ def build_graph():
 
     graph.set_entry_point("capture_ui")
     graph.add_edge("capture_ui", "agent_a")
-    graph.add_edge("agent_a", "score_elements")
+    
+    def check_done_early(state: AgentAState) -> str:
+        if state.get("done"):
+            return "finalize_step"
+        return "score_elements"
+
+    graph.add_conditional_edges(
+        "agent_a",
+        check_done_early,
+        {"finalize_step": "finalize_step", "score_elements": "score_elements"}
+    )
+    
     graph.add_edge("score_elements", "agent_b")
     graph.add_edge("agent_b", "execute_plan")
     graph.add_edge("execute_plan", "finalize_step")

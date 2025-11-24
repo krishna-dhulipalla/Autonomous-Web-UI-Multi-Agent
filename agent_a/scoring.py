@@ -148,7 +148,24 @@ def score_element(elem: Dict, instruction: str, tried_ids: Optional[List[str]] =
     if tried_ids and elem_id in tried_ids:
         score -= 1.5
 
+    # Garbage name penalty
+    if is_garbage_name(name):
+        score -= 5.0
+
     return score
+
+
+def is_garbage_name(name: str) -> bool:
+    """Return True if name is likely garbage (e.g. '1', '123', or very short non-words)."""
+    if not name:
+        return False
+    # Purely numeric
+    if name.isdigit():
+        return True
+    # Very short and not a common word
+    if len(name) < 3 and name.lower() not in {"ok", "go", "id", "up", "to", "at", "in", "on", "by"}:
+        return True
+    return False
 
 
 def select_top(elements: List[Dict], instruction: str, top_k: int = 10, tried_ids: Optional[List[str]] = None):
