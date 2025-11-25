@@ -39,15 +39,16 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
     }
 
     # Run the graph (it loops internally until done)
-    final_state = app.invoke(state, config={"run_name": "agent_a_pipeline", "recursion_limit": 50})
+    final_state = app.invoke(
+        state, config={"run_name": "agent_a_pipeline", "recursion_limit": 50})
     print("[AgentA] Run completed")
-    
+
     # Cleanup
     if final_state.get("context"):
         final_state["context"].close()
     if final_state.get("playwright"):
         final_state["playwright"].stop()
-        
+
     return final_state
 
 
@@ -66,7 +67,8 @@ def print_summary(user_query: str, final_state: AgentAState) -> None:
                 score_val = float(e.get("score", 0.0))
             except Exception:
                 score_val = 0.0
-            print(f"  - {e.get('id')} | {e.get('role')} | {e.get('name')} | score={score_val:.2f}")
+            print(
+                f"  - {e.get('id')} | {e.get('role')} | {e.get('name')} | score={score_val:.2f}")
     actions = final_state.get("actions") or []
     if actions:
         print("Actions:")

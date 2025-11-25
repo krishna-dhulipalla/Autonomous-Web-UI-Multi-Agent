@@ -31,7 +31,8 @@ def finalize_step(state: AgentAState) -> AgentAState:
     # Update history
     actions = state.get("actions", [])
     action_summary = ", ".join([f"{a.get('action')} {a.get('target_id')}" for a in actions])
-    history_entry = f"Step {step}: Instr='{instruction}' Actions=[{action_summary}]"
+    followup_hint = state.get("followup_hint") or ""
+    history_entry = f"Step {step}: Instr='{instruction}' Actions=[{action_summary}] Followup='{followup_hint}'"
     
     history = state.get("history", [])
     history.append(history_entry)

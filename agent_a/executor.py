@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-from playwright.sync_api import TimeoutError
+
 
 from .types import AgentAState
 
@@ -87,8 +87,32 @@ def _safe_select(page, locator, option: str):
     except Exception:
         pass
     locator.wait_for(state="visible", timeout=5000)
+    
+    # Click to open dropdown
     locator.click(timeout=5000)
-    page.get_by_role("option", name=option).click(timeout=5000)
+    
+    # Attempt 1: Standard role="option"
+    try:
+        page.get_by_role("option", name=option).click(timeout=3000)
+        return
+    except Exception:
+        print(f"[Executor] Standard select failed for '{option}', trying text match...")
+
+    # Attempt 2: Text match (for non-standard dropdowns)
+    try:
+        # Look for visible text in the dropdown area
+        page.locator(f"text={option}").first.click(timeout=3000)
+        return
+    except Exception:
+        print(f"[Executor] Text match select failed for '{option}', trying typeahead...")
+
+    # Attempt 3: Typeahead fallback (fill + Enter)
+    # This is risky if the control isn't a combobox, but we are here because select failed.
+    try:
+        locator.fill(option, timeout=3000)
+        locator.press("Enter", timeout=3000)
+    except Exception as e:
+        raise RuntimeError(f"All select strategies failed for '{option}': {e}")
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
@@ -135,9 +159,14 @@ def execute_plan(state: AgentAState) -> AgentAState:
                     raise RuntimeError("Fill action missing text param")
                 _safe_fill(locator, text, role=elem.get("role"))
             elif action == "select":
-                option = params.get("option") or params.get("value")
+                option = params.get("option")
                 if not option:
-                    raise RuntimeError("Select action missing option param")
+                    print(f"[Executor] Missing option for select action on {target_id}")
+                    continue
+                # Guard: only select on dropdown-like roles
+                if (elem.get("role") or "") not in {"combobox", "menuitem"}:
+                    print(f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}")
+                    continue
                 _safe_select(page, locator, option)
             elif action == "press":
                 key = params.get("key") or params.get("keys")
@@ -154,9 +183,67 @@ def execute_plan(state: AgentAState) -> AgentAState:
             print(f"[Executor] Action failed (skipping) in {duration:.2f}s: {e}")
             continue
 
+    # Capture after-action screenshot
     after_path = run_dir / "after_action.png"
     page.screenshot(path=str(after_path), full_page=True)
     print(f"[Executor] After-action screenshot: {after_path}")
+
+    # Compute hash for UI change detection
+    try:
+        from PIL import Image
+        import io
+        
+        # We can read the file we just wrote, or get bytes directly. 
+        # Reading file is safer to ensure it exists.
+        img_bytes = after_path.read_bytes()
+        
+        def _compute_dhash(image_bytes):
+            try:
+                img = Image.open(io.BytesIO(image_bytes)).convert("L").resize((9, 8), Image.Resampling.LANCZOS)
+                pixels = list(img.getdata())
+                diff = []
+                for row in range(8):
+                    for col in range(8):
+                        diff.append(pixels[row * 9 + col] > pixels[row * 9 + col + 1])
+                return sum([1 << i for i, v in enumerate(diff) if v])
+            except Exception as e:
+                print(f"[Executor] dHash failed: {e}")
+                return 0
+
+        current_hash = _compute_dhash(img_bytes)
+        last_hash = state.get("last_image_hash")
+        
+        # Compare
+        ui_same = False
+        if last_hash is not None and current_hash != 0:
+            # Exact match or very close? dHash is robust, exact match is usually fine for "no change"
+            # But let's allow a tiny bit of noise if we wanted, but for now exact match on 64-bit hash
+            ui_same = (current_hash == last_hash)
+            
+        state["ui_same"] = ui_same
+        state["last_image_hash"] = current_hash
+        
+        if ui_same:
+            state["no_change_steps"] = state.get("no_change_steps", 0) + 1
+            print(f"[Executor] UI Unchanged (hash={current_hash})")
+        else:
+            state["no_change_steps"] = 0
+            # If changed, we might want to clear tried_ids or keep them? 
+            # Usually if UI changed, we are in a new state, so previous tried_ids are less relevant 
+            # UNLESS we are in a loop. But the request says "Append attempted target_ids".
+            # Let's append regardless, but maybe Ranker clears them if ui_same is False? 
+            # The request says: "Make Ranker... avoid repeats when UI is unchanged". 
+            # So we just accumulate them here.
+            
+        # Track tried IDs
+        executed_ids = [a.get("target_id") for a in actions if a.get("target_id")]
+        if "tried_ids" not in state:
+            state["tried_ids"] = []
+        state["tried_ids"].extend(executed_ids)
+        
+    except Exception as e:
+        print(f"[Executor] UI detection failed: {e}")
+        state["ui_same"] = False
 
     # Browser stays open for the next step in the loop
     state["after_screenshot"] = str(after_path)

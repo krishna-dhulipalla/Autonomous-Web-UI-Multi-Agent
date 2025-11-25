@@ -1,0 +1,92 @@
+[
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "placeholder": "",
+    "score": 11.0
+  },
+  {
+    "id": "17",
+    "role": "button",
+    "name": "Open details",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Open details')",
+    "placeholder": "",
+    "score": 10.078947368421051
+  },
+  {
+    "id": "19",
+    "role": "button",
+    "name": "Display options",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+    "placeholder": "",
+    "score": 8.5
+  },
+  {
+    "id": "20",
+    "role": "button",
+    "name": "Collapse group",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Collapse group')",
+    "placeholder": "",
+    "score": 8.5
+  },
+  {
+    "id": "31",
+    "role": "link",
+    "name": "TES-5\nMy test issue from Playwright\nNov 26\nKD\nNov 19",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='TES-5\\nMy test issue from Playwright\\nNov 26\\nKD\\nNov 19')",
+    "placeholder": "",
+    "score": 7.553571428571429
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "placeholder": "",
+    "score": 7.5
+  },
+  {
+    "id": "27",
+    "role": "link",
+    "name": "Assigned",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Assigned')",
+    "placeholder": "",
+    "score": 7.5
+  },
+  {
+    "id": "28",
+    "role": "link",
+    "name": "Created",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Created')",
+    "placeholder": "",
+    "score": 7.5
+  },
+  {
+    "id": "29",
+    "role": "link",
+    "name": "Subscribed",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Subscribed')",
+    "placeholder": "",
+    "score": 7.5
+  },
+  {
+    "id": "30",
+    "role": "link",
+    "name": "Activity",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Activity')",
+    "placeholder": "",
+    "score": 7.5
+  }
+]

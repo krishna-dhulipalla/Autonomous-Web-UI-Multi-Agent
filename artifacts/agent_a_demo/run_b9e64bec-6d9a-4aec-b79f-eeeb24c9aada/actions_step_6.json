@@ -1,0 +1,28 @@
+[
+  {
+    "action": "select",
+    "target_id": "43",
+    "params": {
+      "option": "High"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "44",
+    "params": {
+      "option": "kdhulipalla13@gmail.com"
+    }
+  },
+  {
+    "action": "select",
+    "target_id": "45",
+    "params": {
+      "option": "improvement"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "27",
+    "params": {}
+  }
+]

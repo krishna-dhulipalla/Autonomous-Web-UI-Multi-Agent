@@ -19,4 +19,6 @@ CLICKABLE_ROLES = [
     "tab",
     "textbox",
     "combobox",
+    "textarea",
+    "searchbox",
 ]

@@ -1,0 +1,14 @@
+[
+  {
+    "action": "select",
+    "target_id": "45",
+    "params": {
+      "option": "improvement"
+    }
+  },
+  {
+    "action": "click",
+    "target_id": "27",
+    "params": {}
+  }
+]

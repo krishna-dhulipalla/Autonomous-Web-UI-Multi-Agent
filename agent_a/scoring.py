@@ -9,6 +9,9 @@ ROLE_WEIGHTS = {
     "link": 2.0,
     "combobox": 2.0,
     "textbox": 2.0,
+    "textarea": 2.0,
+    "searchbox": 2.0,
+    "contenteditable": 2.0,
     "menuitem": 1.5,
     "checkbox": 1.5,
     "radio": 1.5,
@@ -101,14 +104,17 @@ def infer_intent_role(instruction_tokens: List[str]) -> Optional[set]:
     return None
 
 
-def score_element(elem: Dict, instruction: str, tried_ids: Optional[List[str]] = None) -> float:
+def score_element(elem: Dict, instruction: str, tried_ids: Optional[List[str]] = None, ui_same: bool = False) -> float:
     name = (elem.get("name") or "").strip()
     role = elem.get("role") or ""
     landmark = elem.get("landmark") or ""
+    placeholder = (elem.get("placeholder") or "").strip()
     elem_id = elem.get("id") or ""
 
     instr_tokens = tokenize(instruction or "")
-    name_tokens = tokenize(name)
+    # Use placeholder as fallback or additive signal
+    name_text = (name + " " + placeholder).strip()
+    name_tokens = tokenize(name_text)
     instr_tokens_set = set(instr_tokens)
     name_tokens_set = set(name_tokens)
 
@@ -146,11 +152,22 @@ def score_element(elem: Dict, instruction: str, tried_ids: Optional[List[str]] =
 
     # Retry penalty
     if tried_ids and elem_id in tried_ids:
-        score -= 1.5
+        if ui_same:
+            score -= 5.0  # Strong penalty if UI didn't change
+        else:
+            score -= 1.5  # Mild penalty otherwise
 
     # Garbage name penalty
     if is_garbage_name(name):
         score -= 5.0
+
+    # Landmark bias: prefer main/region for form-like instructions
+    instr_lc = instruction.lower()
+    if any(tok in instr_lc for tok in ["fill", "form", "title", "description", "field", "submit", "save"]):
+        if landmark == "main":
+            score += 1.5
+        elif landmark in ("navigation", "banner", "contentinfo"):
+            score -= 1.0
 
     return score
 
@@ -168,42 +185,7 @@ def is_garbage_name(name: str) -> bool:
     return False
 
 
-def select_top(elements: List[Dict], instruction: str, top_k: int = 10, tried_ids: Optional[List[str]] = None):
-    scored = []
-    for e in elements:
-        s = score_element(e, instruction, tried_ids)
-        e_copy = {k: e.get(k) for k in ("id", "role", "name", "landmark", "playwright_snippet")}
-        e_copy["score"] = s
-        scored.append(e_copy)
 
-    scored_sorted = sorted(scored, key=lambda x: x["score"], reverse=True)
-
-    selected = []
-    used_ids = set()
-
-    # baseline top_k
-    for e in scored_sorted:
-        if len(selected) >= top_k:
-            break
-        selected.append(e)
-        used_ids.add(e["id"])
-
-    instr_lc = instruction.lower()
-    # ensure some textboxes for fill instructions
-    if any(tok in instr_lc for tok in ["fill", "title", "description", "field"]):
-        textboxes = [e for e in scored_sorted if e.get("role") == "textbox" and e["id"] not in used_ids]
-        for e in textboxes[:3]:
-            selected.append(e)
-            used_ids.add(e["id"])
-
-    # ensure some comboboxes for select instructions
-    if any(tok in instr_lc for tok in ["select", "dropdown", "choose", "option"]):
-        combos = [e for e in scored_sorted if e.get("role") == "combobox" and e["id"] not in used_ids]
-        for e in combos[:2]:
-            selected.append(e)
-            used_ids.add(e["id"])
-
-    return selected, scored_sorted
 
 
 def persist_scored(out_path: Path, base_meta: Dict, scored_all: List[Dict], top_k: List[Dict]) -> None:

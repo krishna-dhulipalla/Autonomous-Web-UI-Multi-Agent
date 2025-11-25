@@ -1,0 +1,472 @@
+{
+  "url": "https://linear.app/testing-multi-agent-ui/projects/all",
+  "screenshot": "artifacts\\agent_a_demo\\run_f9994559-37df-47c4-80b9-02abb6ebac0a\\raw.png",
+  "user_query": "Create a new issue with title 'testing_issue 1', description 'created by multi-agent with playwright', set priority 'high', set assignee 'kdhulipalla13@gmail.com', set label as 'improvement' and set due date next week and then save it.",
+  "elements": [
+    {
+      "id": "0",
+      "role": "button",
+      "name": "Testing_multi_agent_UI Workspace Menu",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 14.000000953674316,
+        "width": 143.99999904632568,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+      "name_hint": "Testing_multi_agent_UI Workspa..."
+    },
+    {
+      "id": "1",
+      "role": "button",
+      "name": "Search workspace",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 166,
+        "y": 14.000000953674316,
+        "width": 28.000015258789062,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+      "name_hint": "Search workspace"
+    },
+    {
+      "id": "2",
+      "role": "button",
+      "name": "Create new issue",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 202.00001525878906,
+        "y": 14.000000953674316,
+        "width": 28,
+        "height": 27.999999046325684
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+      "name_hint": "Create new issue"
+    },
+    {
+      "id": "3",
+      "role": "button",
+      "name": "Inbox",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 53.000003814697266,
+        "width": 215.71429347991943,
+        "height": 27.999996185302734
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Inbox')",
+      "name_hint": "Inbox"
+    },
+    {
+      "id": "4",
+      "role": "button",
+      "name": "My issues",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 82,
+        "width": 215.71429347991943,
+        "height": 28.00000762939453
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='My issues')",
+      "name_hint": "My issues"
+    },
+    {
+      "id": "5",
+      "role": "button",
+      "name": "Workspace",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 127.00000762939453,
+        "width": 215.71429347991943,
+        "height": 23.99999237060547
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+      "name_hint": "Workspace"
+    },
+    {
+      "id": "6",
+      "role": "button",
+      "name": "Projects",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 153.04464721679688,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Projects')",
+      "name_hint": "Projects"
+    },
+    {
+      "id": "7",
+      "role": "button",
+      "name": "Views",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 182.04464721679688,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Views')",
+      "name_hint": "Views"
+    },
+    {
+      "id": "8",
+      "role": "button",
+      "name": "Show more workspace links",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 211.04464721679688,
+        "width": 64.13393306732178,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+      "name_hint": "Show more workspace links"
+    },
+    {
+      "id": "9",
+      "role": "button",
+      "name": "Your teams",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 256.0446472167969,
+        "width": 215.71429347991943,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Your teams')",
+      "name_hint": "Your teams"
+    },
+    {
+      "id": "10",
+      "role": "button",
+      "name": "Testing_multi_agent_UI\nIssues\nProjects\nViews",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 282.08929443359375,
+        "width": 215.71429347991943,
+        "height": 122
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI\\nIssues\\nProjects\\nViews')",
+      "name_hint": "Testing_multi_agent_UI\nIssues\n..."
+    },
+    {
+      "id": "11",
+      "role": "button",
+      "name": "Testing_multi_agent_UI",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 282.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI')",
+      "name_hint": "Testing_multi_agent_UI"
+    },
+    {
+      "id": "12",
+      "role": "button",
+      "name": "Try",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 420.08929443359375,
+        "width": 215.71429347991943,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Try')",
+      "name_hint": "Try"
+    },
+    {
+      "id": "13",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 448.1339416503906,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "14",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 477.1339416503906,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "15",
+      "role": "button",
+      "name": "Dismiss",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 205.71429443359375,
+        "y": 506.1339416503906,
+        "width": 24,
+        "height": 24.000030517578125
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+      "name_hint": "Dismiss"
+    },
+    {
+      "id": "16",
+      "role": "button",
+      "name": "Open Help menu",
+      "landmark": null,
+      "placeholder": "",
+      "bounding_box": {
+        "x": 10,
+        "y": 686.0000610351562,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"button\", name='Open Help menu')",
+      "name_hint": "Open Help menu"
+    },
+    {
+      "id": "17",
+      "role": "button",
+      "name": "Add new view",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 450.6785888671875,
+        "y": 16.071430206298828,
+        "width": 92.9375,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add new view')",
+      "name_hint": "Add new view"
+    },
+    {
+      "id": "18",
+      "role": "button",
+      "name": "Copy page URL",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 1058.669677734375,
+        "y": 16.071430206298828,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Copy page URL')",
+      "name_hint": "Copy page URL"
+    },
+    {
+      "id": "19",
+      "role": "button",
+      "name": "Add project",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 1094.669677734375,
+        "y": 16.071430206298828,
+        "width": 103.7589111328125,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add project')",
+      "name_hint": "Add project"
+    },
+    {
+      "id": "20",
+      "role": "button",
+      "name": "Close sidebar",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 1223.4285888671875,
+        "y": 16.071430206298828,
+        "width": 24,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Close sidebar')",
+      "name_hint": "Close sidebar"
+    },
+    {
+      "id": "21",
+      "role": "button",
+      "name": "Add filter",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 268.5714416503906,
+        "y": 54.78571701049805,
+        "width": 70.09820556640625,
+        "height": 24.000003814697266
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+      "name_hint": "Add filter"
+    },
+    {
+      "id": "22",
+      "role": "button",
+      "name": "Display options",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 1168.1607666015625,
+        "y": 54.78571701049805,
+        "width": 79.267822265625,
+        "height": 24.000003814697266
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+      "name_hint": "Display options"
+    },
+    {
+      "id": "23",
+      "role": "button",
+      "name": "Create new project",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 588,
+        "y": 500.89288330078125,
+        "width": 207.25006103515625,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Create new project')",
+      "name_hint": "Create new project"
+    },
+    {
+      "id": "24",
+      "role": "link",
+      "name": "Issues",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 311.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Issues')",
+      "name_hint": "Issues"
+    },
+    {
+      "id": "25",
+      "role": "link",
+      "name": "Projects",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 340.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Projects')",
+      "name_hint": "Projects"
+    },
+    {
+      "id": "26",
+      "role": "link",
+      "name": "Views",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 369.08929443359375,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Views')",
+      "name_hint": "Views"
+    },
+    {
+      "id": "27",
+      "role": "link",
+      "name": "Import issues",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 446.1339416503906,
+        "width": 215.71429347991943,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Import issues')",
+      "name_hint": "Import issues"
+    },
+    {
+      "id": "28",
+      "role": "link",
+      "name": "Link GitHub",
+      "landmark": "navigation",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 14.000000953674316,
+        "y": 504.1339416503906,
+        "width": 215.71429347991943,
+        "height": 28.000030517578125
+      },
+      "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Link GitHub')",
+      "name_hint": "Link GitHub"
+    },
+    {
+      "id": "29",
+      "role": "link",
+      "name": "All projects",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 339.26788330078125,
+        "y": 16.071430206298828,
+        "width": 103.41070556640625,
+        "height": 24
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='All projects')",
+      "name_hint": "All projects"
+    },
+    {
+      "id": "30",
+      "role": "link",
+      "name": "Documentation",
+      "landmark": "main",
+      "placeholder": "",
+      "bounding_box": {
+        "x": 811.2500610351562,
+        "y": 500.89288330078125,
+        "width": 116.66070556640625,
+        "height": 28
+      },
+      "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"link\", name='Documentation')",
+      "name_hint": "Documentation"
+    }
+  ]
+}

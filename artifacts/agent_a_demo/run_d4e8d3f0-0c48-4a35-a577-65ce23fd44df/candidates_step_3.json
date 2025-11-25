@@ -1,0 +1,119 @@
+[
+  {
+    "id": "27",
+    "role": "button",
+    "name": "Create issue",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"button\", name='Create issue')",
+    "placeholder": "",
+    "score": 8.571428571428571
+  },
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "placeholder": "",
+    "score": 8.5
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Create new issue",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+    "placeholder": "",
+    "score": 7.107142857142858
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Search workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "0",
+    "role": "button",
+    "name": "Testing_multi_agent_UI Workspace Menu",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "5",
+    "role": "button",
+    "name": "Workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "17",
+    "role": "button",
+    "name": "Open details",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Open details')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "19",
+    "role": "button",
+    "name": "Display options",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "20",
+    "role": "button",
+    "name": "Collapse group",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Collapse group')",
+    "placeholder": "",
+    "score": 6.0
+  },
+  {
+    "id": "40",
+    "role": "textbox",
+    "name": "Issue title",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"textbox\", name='Issue title')",
+    "placeholder": "",
+    "score": 5.034883720930233
+  },
+  {
+    "id": "41",
+    "role": "textbox",
+    "name": "Issue description",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"textbox\", name='Issue description')",
+    "placeholder": "",
+    "score": 5.034883720930233
+  },
+  {
+    "id": "47",
+    "role": "searchbox",
+    "name": "Assign to\u2026",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"searchbox\", name='Assign to\u2026')",
+    "placeholder": "Assign to\u2026",
+    "score": 3.0348837209302326
+  }
+]
