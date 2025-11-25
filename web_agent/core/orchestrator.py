@@ -59,7 +59,8 @@ def print_summary(user_query: str, final_state: AgentAState) -> None:
     print("Run dir:", final_state.get("run_dir"))
     print("Instruction:", final_state.get("instruction"))
     print("Screenshot:", final_state.get("screenshot_path"))
-    print("Elements JSON:", Path(final_state.get("run_dir", "")) / "elements.json")
+    step = max(final_state.get("step", 1) - 1, 0)
+    print("Elements JSON:", Path(final_state.get("run_dir", "")) / f"elements_step_{step}.json")
     top = final_state.get("top_elements") or []
     if top:
         print("Top candidates (id, role, name, score):")

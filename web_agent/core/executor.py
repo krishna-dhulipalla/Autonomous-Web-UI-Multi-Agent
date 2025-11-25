@@ -21,13 +21,15 @@ def _get_locator(page, snippet: str):
         locator = eval(snippet, {"page": page})
         try:
             if locator.count() > 1:
-                print(f"[Executor] Locator matched {locator.count()} elements; using the first.")
+                print(
+                    f"[Executor] Locator matched {locator.count()} elements; using the first.")
                 locator = locator.nth(0)
         except Exception:
             pass
         return locator
     except Exception as e:
-        raise RuntimeError(f"Failed to resolve locator from snippet: {snippet} ({e})")
+        raise RuntimeError(
+            f"Failed to resolve locator from snippet: {snippet} ({e})")
 
 
 def _safe_click(locator):
@@ -51,12 +53,12 @@ def _safe_fill(locator, text: str, role: str = ""):
     except Exception:
         pass
     locator.wait_for(state="visible", timeout=5000)
-    
+
     # Check if editable
     try:
         is_editable = locator.is_editable(timeout=1000)
         if not is_editable:
-             # Try to click first, sometimes that makes it editable
+            # Try to click first, sometimes that makes it editable
             locator.click(timeout=1000)
             is_editable = locator.is_editable(timeout=1000)
             if not is_editable:
@@ -85,16 +87,17 @@ def _safe_select(page, locator, option: str):
     except Exception:
         pass
     locator.wait_for(state="visible", timeout=5000)
-    
+
     # Click to open dropdown
     locator.click(timeout=5000)
-    
+
     # Attempt 1: Standard role="option"
     try:
         page.get_by_role("option", name=option).click(timeout=3000)
         return
     except Exception:
-        print(f"[Executor] Standard select failed for '{option}', trying text match...")
+        print(
+            f"[Executor] Standard select failed for '{option}', trying text match...")
 
     # Attempt 2: Text match (for non-standard dropdowns)
     try:
@@ -128,15 +131,16 @@ def execute_plan(state: AgentAState) -> AgentAState:
         return state
 
     run_dir = Path(state["run_dir"])
-    meta_path = run_dir / "elements.json"
-    if not meta_path.exists():
-        raise RuntimeError(f"Metadata file missing: {meta_path}")
-
-    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    # Use in-memory elements/top_k instead of reading elements.json
+    meta = {
+        "elements": state.get("elements") or [],
+        "top_k": state.get("top_elements") or [],
+    }
     page = state.get("page")
     context = state.get("context")
     if page is None or context is None:
-        raise RuntimeError("No live page/context found in state for execution.")
+        raise RuntimeError(
+            "No live page/context found in state for execution.")
 
     for idx, plan in enumerate(actions, start=1):
         target_id = plan.get("target_id")
@@ -150,15 +154,19 @@ def execute_plan(state: AgentAState) -> AgentAState:
         if not snippet:
             raise RuntimeError(f"No snippet for element id {target_id}")
 
-        print(f"[Executor] Action {idx}/{len(actions)}: {action} on id={target_id} name={elem.get('name')}")
+        print(
+            f"[Executor] Action {idx}/{len(actions)}: {action} on id={target_id} name={elem.get('name')}")
 
         locator = _get_locator(page, snippet)
+        role = (elem.get("role") or "").lower()
 
         start = time.time()
         try:
             if action == "click":
-                # Clear any lingering overlays before submit-like clicks
-                _dismiss_overlays(page)
+                # Only clear overlays for "global" actions, not menu options
+                if role in {"button", "link", "tab"}:
+                    _dismiss_overlays(page)
+
                 _safe_click(locator)
             elif action == "fill":
                 text = params.get("text") or params.get("value") or ""
@@ -168,16 +176,19 @@ def execute_plan(state: AgentAState) -> AgentAState:
             elif action == "select":
                 option = params.get("option")
                 if not option:
-                    print(f"[Executor] Missing option for select action on {target_id}")
+                    print(
+                        f"[Executor] Missing option for select action on {target_id}")
                     continue
                 # Guard: only select on dropdown-like roles
                 if (elem.get("role") or "") not in {"combobox", "menuitem"}:
-                    print(f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}")
+                    print(
+                        f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}")
                     continue
                 # Basic value compatibility check: avoid feeding date-ish values into non-date controls
                 opt_lower = option.lower()
                 if "status" in (elem.get("name") or "").lower() and any(tok in opt_lower for tok in ["today", "tomorrow", "next week", "next day", "next month"]):
-                    print(f"[Executor] Skipping select on status-like control with date-like option '{option}'")
+                    print(
+                        f"[Executor] Skipping select on status-like control with date-like option '{option}'")
                     continue
                 _safe_select(page, locator, option)
             elif action == "press":
@@ -192,7 +203,8 @@ def execute_plan(state: AgentAState) -> AgentAState:
             print(f"[Executor] Action succeeded in {duration:.2f}s")
         except Exception as e:
             duration = time.time() - start
-            print(f"[Executor] Action failed (skipping) in {duration:.2f}s: {e}")
+            print(
+                f"[Executor] Action failed (skipping) in {duration:.2f}s: {e}")
             continue
 
     # Capture after-action screenshot
@@ -204,19 +216,21 @@ def execute_plan(state: AgentAState) -> AgentAState:
     try:
         from PIL import Image
         import io
-        
-        # We can read the file we just wrote, or get bytes directly. 
+
+        # We can read the file we just wrote, or get bytes directly.
         # Reading file is safer to ensure it exists.
         img_bytes = after_path.read_bytes()
-        
+
         def _compute_dhash(image_bytes):
             try:
-                img = Image.open(io.BytesIO(image_bytes)).convert("L").resize((9, 8), Image.Resampling.LANCZOS)
+                img = Image.open(io.BytesIO(image_bytes)).convert(
+                    "L").resize((9, 8), Image.Resampling.LANCZOS)
                 pixels = list(img.getdata())
                 diff = []
                 for row in range(8):
                     for col in range(8):
-                        diff.append(pixels[row * 9 + col] > pixels[row * 9 + col + 1])
+                        diff.append(pixels[row * 9 + col] >
+                                    pixels[row * 9 + col + 1])
                 return sum([1 << i for i, v in enumerate(diff) if v])
             except Exception as e:
                 print(f"[Executor] dHash failed: {e}")
@@ -224,35 +238,36 @@ def execute_plan(state: AgentAState) -> AgentAState:
 
         current_hash = _compute_dhash(img_bytes)
         last_hash = state.get("last_image_hash")
-        
+
         # Compare
         ui_same = False
         if last_hash is not None and current_hash != 0:
             # Exact match or very close? dHash is robust, exact match is usually fine for "no change"
             # But let's allow a tiny bit of noise if we wanted, but for now exact match on 64-bit hash
             ui_same = (current_hash == last_hash)
-            
+
         state["ui_same"] = ui_same
         state["last_image_hash"] = current_hash
-        
+
         if ui_same:
             state["no_change_steps"] = state.get("no_change_steps", 0) + 1
             print(f"[Executor] UI Unchanged (hash={current_hash})")
         else:
             state["no_change_steps"] = 0
-            # If changed, we might want to clear tried_ids or keep them? 
-            # Usually if UI changed, we are in a new state, so previous tried_ids are less relevant 
+            # If changed, we might want to clear tried_ids or keep them?
+            # Usually if UI changed, we are in a new state, so previous tried_ids are less relevant
             # UNLESS we are in a loop. But the request says "Append attempted target_ids".
-            # Let's append regardless, but maybe Ranker clears them if ui_same is False? 
-            # The request says: "Make Ranker... avoid repeats when UI is unchanged". 
+            # Let's append regardless, but maybe Ranker clears them if ui_same is False?
+            # The request says: "Make Ranker... avoid repeats when UI is unchanged".
             # So we just accumulate them here.
-            
+
         # Track tried IDs
-        executed_ids = [a.get("target_id") for a in actions if a.get("target_id")]
+        executed_ids = [a.get("target_id")
+                        for a in actions if a.get("target_id")]
         if "tried_ids" not in state:
             state["tried_ids"] = []
         state["tried_ids"].extend(executed_ids)
-        
+
     except Exception as e:
         print(f"[Executor] UI detection failed: {e}")
         state["ui_same"] = False

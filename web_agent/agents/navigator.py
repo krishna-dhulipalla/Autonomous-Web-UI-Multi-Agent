@@ -53,6 +53,9 @@ def agent_a(state: AgentAState) -> AgentAState:
             "\n"
             "4. Plan ONE next conceptual step.\n"
             "   - The step must be something Agent B can execute using DOM labels and structure.\n"
+            "   - At the START of the `instruction` string, briefly describe the current UI context for Agent B\n"
+            "     (e.g., 'You are currently on the workspace dropdown menu; now click the Settings option.').\n"
+            "   - Then state the concrete next step that Agent B should try.\n"
             "   - If the current screen is a relevant form and the goal requires submitting it, then propose a single macro step to fill the entire form.\n"
             "     Provide a high-level field plan using `plan_steps` (see format below). Do NOT emit micro actions here.\n"
             "   - Otherwise, propose a non-form step (e.g., open a menu, navigate, open a creation form, resolve a blocking popup, etc.).\n"
@@ -77,22 +80,22 @@ def agent_a(state: AgentAState) -> AgentAState:
             "RESPONSE SCHEMA (JSON ONLY)\n"
             "====================\n"
             "Always respond with a single JSON object with keys:\n"
-            "- instruction: string – the next step description for Agent B\n"
+            "- instruction: string – the next step description for Agent B, starting with a short UI context\n"
             "- reason: string – your brief reasoning\n"
             "- done: boolean – whether the goal is fully completed\n"
             "- plan_steps: object | null – present ONLY when the step is a form macro\n"
             "\n"
             "Non-form step example:\n"
             "{\n"
-            "  \"instruction\": \"Open the creation form using the main 'Create' control on this page.\",\n"
-            "  \"reason\": \"We must open the form before we can enter details.\",\n"
+            "  \"instruction\": \"You are on the issues list with the workspace menu closed; click the workspace menu button to open it.\",\n"
+            "  \"reason\": \"We must open the workspace menu to reach profile settings.\",\n"
             "  \"done\": false,\n"
             "  \"plan_steps\": null\n"
             "}\n"
             "\n"
             "Form step example (provide ALL fields in plan_steps):\n"
             "{\n"
-            "  \"instruction\": \"Fill the creation form with the provided details and then submit.\",\n"
+            "  \"instruction\": \"You are on the creation form; fill it with the provided details and then submit.\",\n"
             "  \"reason\": \"The form is visible; completing it progresses directly to the goal.\",\n"
             "  \"done\": false,\n"
             "  \"plan_steps\": {\n"
@@ -117,7 +120,7 @@ def agent_a(state: AgentAState) -> AgentAState:
             "\n"
             "Blocked state example:\n"
             "{\n"
-            "  \"instruction\": \"Dismiss the blocking dialog by clicking its primary confirmation button, then reopen the creation form.\",\n"
+            "  \"instruction\": \"You are blocked by a dialog; click its primary confirmation button, then reopen the creation form.\",\n"
             "  \"reason\": \"A blocking dialog prevents interaction with the main content.\",\n"
             "  \"done\": false,\n"
             "  \"plan_steps\": null\n"
@@ -125,7 +128,9 @@ def agent_a(state: AgentAState) -> AgentAState:
         )
     )
 
-    history_text = f"History: {state.get('history') or []}"
+    history_list = state.get("history") or []
+    history_tail = history_list[-2:] if len(history_list) > 2 else history_list
+    history_text = f"History (last {len(history_tail)}): {history_tail}"
     if state.get("ui_same"):
         history_text += f"; ui_same: true; last_tried_ids: {state.get('tried_ids', [])[-5:]}"
 

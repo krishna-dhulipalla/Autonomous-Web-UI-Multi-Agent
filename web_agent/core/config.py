@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Core destinations
-TEAM_URL = "https://linear.app/testing-multi-agent-ui/projects/all"
+TEAM_URL = "https://linear.app/testing-multi-agent-ui/my-issues/assigned"
 PROFILE_DIR = "playwright_profile"
 
 # Output paths
@@ -15,7 +15,11 @@ CLICKABLE_ROLES = [
     "checkbox",
     "radio",
     "switch",
+    "menu",
     "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
     "tab",
     "textbox",
     "combobox",

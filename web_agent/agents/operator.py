@@ -21,7 +21,7 @@ def _heuristic_match(value: str, name: str) -> str:
     """Return a semantic type for a value or element name."""
     # Check both value and name for keywords
     text = (value + " " + name).lower()
-    
+
     if "@" in text and "." in text:
         return "email"
     if any(x in text for x in ["high", "medium", "low", "urgent", "priority"]):
@@ -50,12 +50,13 @@ def agent_b(state: AgentAState) -> AgentAState:
         content=(
             "You are **Agent B**, the low-level UI operator. You do NOT see screenshots.\n"
             "You receive:\n"
-            "- A high-level `instruction` from Agent A (Navigator)\n"
+            "- A high-level `instruction` from Agent A (Navigator), which often includes a short description of the current UI context\n"
             "- An optional structured `plan_steps` (for forms)\n"
             "- A list of up to 10 DOM candidates with stable `target_id`, labels, roles, and hints\n"
             "\n"
             "Your job:\n"
-            "- Produce a SMALL sequence of concrete UI actions that satisfies the instruction.\n"
+            "- Interpret the instruction and UI context.\n"
+            "- Produce a SMALL sequence of concrete UI actions that advances the instruction.\n"
             "- Use ONLY the provided candidates by their `target_id`.\n"
             "- Return JSON ONLY.\n"
             "\n"
@@ -89,41 +90,28 @@ def agent_b(state: AgentAState) -> AgentAState:
             "  it is almost always WRONG to just click it with empty params.\n"
             "  * Prefer action: select with params.option taken from that field's value in `plan_steps`.\n"
             "  * If the control behaves like a typeahead, use action: fill with params.text.\n"
-            "- Order: (1) focus/open form if needed (click), (2) fill/select all fields, (3) submit if `submit: true`.\n"
+            "- Typical order: (1) open/focus form if needed (click), (2) fill/select all fields, (3) submit if `submit: true`.\n"
             "- If a required field has **no matching candidate in the top-10**, skip it and still return actions for the rest.\n"
             "\n"
-            "Example (FORM):\n"
-            "{\n"
-            "  \"actions\": [\n"
-            "    {\"action\": \"fill\",   \"target_id\": \"13\", \"params\": {\"text\": \"testing\"}},\n"
-            "    {\"action\": \"select\", \"target_id\": \"22\", \"params\": {\"option\": \"High\"}},\n"
-            "    {\"action\": \"fill\",   \"target_id\": \"41\", \"params\": {\"text\": \"next week\"}},\n"
-            "    {\"action\": \"click\",  \"target_id\": \"30\", \"params\": {}}\n"
-            "  ],\n"
-            "  \"followup_hint\": \"Form filled and submitted—expect navigation or a success toast.\"\n"
-            "}\n"
-            "\n"
             "====================\n"
-            "WHEN `plan_steps` (NON-FORM STEP) IS ABSENT\n"
+            "WHEN `plan_steps` IS ABSENT (NON-FORM STEP)\n"
             "====================\n"
-            "- Produce the minimal actions that advance the instruction (often 1–3 actions).\n"
-            "- Examples: open a creation dialog, expand a menu, navigate a tab, confirm a blocking popup, etc.\n"
-            "\n"
-            "Example (NON-FORM):\n"
-            "{\n"
-            "  \"actions\": [\n"
-            "    {\"action\": \"click\", \"target_id\": \"25\", \"params\": {}}\n"
-            "  ],\n"
-            "  \"followup_hint\": \"Opens the issue creation form modal.\"\n"
-            "}\n"
+            "- Treat the instruction as a single next navigation/interaction step.\n"
+            "- Use the context in the instruction (e.g. 'You are on the workspace menu…') to avoid re-opening menus\n"
+            "  or clicking unrelated chrome.\n"
+            "- For pure navigation or click steps (e.g. 'click the Settings option', 'open the issues tab'):\n"
+            "  * Produce **exactly ONE** `click` action on the single best-matching candidate.\n"
+            "  * Do NOT chain multiple preparatory clicks (e.g. 'click Workspace, then click Settings') in one response.\n"
+            "    Agent A will issue follow-up instructions for additional steps.\n"
+            "- Only include multiple actions in a non-form step when they are clearly part of one atomic interaction\n"
+            "  (e.g. press a key immediately after a click to close a dialog), and keep this rare.\n"
             "\n"
             "====================\n"
             "SELECTION RULES\n"
             "====================\n"
             "- Match by label/accessibility name and role first. Prefer visible, enabled controls.\n"
-            "- Prefer controls that are likely inside the active form/modal (same region as other fields),\n"
-            "  over navigation/toolbar items that live far away from the form.\n"
-            "- If multiple candidates look valid, choose the one that best fits context (e.g., in a form region or modal).\n"
+            "- Use the context in the instruction to bias toward the right region: if it mentions a menu, dropdown,\n"
+            "  or modal, prefer candidates that are likely inside that UI, instead of global navigation/toolbars.\n"
             "- When the instruction is to submit/create/update and you see multiple similar buttons\n"
             "  (e.g. 'Create new issue' in navigation vs 'Create issue' in the form),\n"
             "  prefer the button in the current form/modal instead of the global navigation control.\n"
@@ -131,25 +119,28 @@ def agent_b(state: AgentAState) -> AgentAState:
             "- Do NOT invent target_ids. Use only the provided candidates.\n"
             "- Keep the action list short and strictly necessary. No exploratory clicks.\n"
             "- Do not map two different form fields to the same target_id. Each field should use its own control.\n"
-            "- If you cannot determine a concrete option or text from plan_steps or the goal, omit that action and mention it in followup_hint instead of guessing or clicking blindly.\n"
-            "- If ui_same is true in the history, do not choose the same target_id that was used last step. Pick a different candidate that advances the goal.\n"
-            "- For role combobox, prefer select { option }. Do not use fill unless explicitly told it’s a typeahead and no visible option appears.\n"
+            "- If you cannot determine a concrete option or text from plan_steps or the goal, omit that action and\n"
+            "  mention it in followup_hint instead of guessing or clicking blindly.\n"
+            "- If ui_same is true in the history, do not choose the same target_id that was used last step. Pick a different\n"
+            "  candidate that advances the goal.\n"
+            "- For role=combobox, prefer select { option }. Do not use fill unless explicitly told it’s a typeahead and\n"
+            "  no visible option appears.\n"
             "\n"
             "====================\n"
             "SAFETY & CONSISTENCY\n"
             "====================\n"
             "- Avoid destructive actions (delete/close/dismiss) unless clearly required by the instruction.\n"
             "- If a field value already appears correct in its label/hint, you may omit that action.\n"
-            "- If nothing can be done with the provided candidates, return an empty actions list and a followup_hint explaining what is missing.\n"
+            "- If nothing can be done with the provided candidates, return an empty actions list and a followup_hint\n"
+            "  explaining what is missing.\n"
             "- **CRITICAL**: Do NOT output 'fill' action for elements with role 'button', 'link', 'tab', 'menuitem', or 'switch'.\n"
-            "  Only 'textbox', 'combobox', 'searchbox', or 'textarea' can be filled.\n"
-            "- If the instruction is to finish or submit an operation (e.g. 'create issue', 'save changes') and there is both\n"
-            "  a navigation-level button and an in-form button with similar text, treat the in-form button as the correct target.\n"
+            "  Only 'textbox', 'combobox', 'searchbox', 'textarea', or similar input roles may be filled.\n"
             "\n"
             "====================\n"
             "RESPONSE REQUIREMENT\n"
             "====================\n"
-            "- Return exactly one JSON object with keys actions and followup_hint. Do not wrap the object in an array and do not include any extra text.\n"
+            "- Return exactly one JSON object with keys `actions` and `followup_hint`.\n"
+            "- Do not wrap the object in an array and do not include any extra text.\n"
         )
     )
     plan_json = json.dumps(
@@ -222,15 +213,16 @@ def agent_b(state: AgentAState) -> AgentAState:
 
         action_type = a.get("action")
         tid = a.get("target_id")
-        
+
         # --- Normalization & Correction ---
-        
+
         # 1. Auto-convert fill -> select for combobox
         role = role_by_id.get(str(tid), "")
         if action_type == "fill" and role == "combobox":
             text_val = a["params"].get("text") or a["params"].get("value")
             if text_val:
-                print(f"[AgentB] Converting fill('{text_val}') -> select('{text_val}') for combobox {tid}")
+                print(
+                    f"[AgentB] Converting fill('{text_val}') -> select('{text_val}') for combobox {tid}")
                 a["action"] = "select"
                 a["params"] = {"option": text_val}
                 action_type = "select"
@@ -242,16 +234,17 @@ def agent_b(state: AgentAState) -> AgentAState:
             val_to_check = a["params"].get("option")
         elif action_type == "fill":
             val_to_check = a["params"].get("text")
-            
+
         if val_to_check and tid:
             current_name = name_by_id.get(str(tid), "")
             val_type = _heuristic_match(val_to_check, "")
             name_type = _heuristic_match("", current_name)
-            
+
             # If types differ and are specific (not 'other'), try to find a better target
             # We allow swapping if val_type is known (e.g. priority) and target is either unknown or different
             if val_type != "other" and val_type != name_type:
-                print(f"[AgentB] Semantic mismatch: value='{val_to_check}' ({val_type}) vs target='{current_name}' ({name_type})")
+                print(
+                    f"[AgentB] Semantic mismatch: value='{val_to_check}' ({val_type}) vs target='{current_name}' ({name_type})")
                 # Look for a better candidate in top elements
                 best_swap = None
                 for cand in top:
@@ -260,9 +253,10 @@ def agent_b(state: AgentAState) -> AgentAState:
                     c_type = _heuristic_match("", c_name)
                     if c_type == val_type and c_id not in seen_targets:
                         best_swap = c_id
-                        print(f"[AgentB] Found better swap candidate: {c_id} ('{c_name}')")
+                        print(
+                            f"[AgentB] Found better swap candidate: {c_id} ('{c_name}')")
                         break
-                
+
                 if best_swap:
                     print(f"[AgentB] Swapping target {tid} -> {best_swap}")
                     tid = best_swap
@@ -273,7 +267,8 @@ def agent_b(state: AgentAState) -> AgentAState:
         # Enforce unique target_id (one field -> one control)
         if tid:
             if tid in seen_targets:
-                print(f"[AgentB] Skipping duplicate action for target_id {tid}")
+                print(
+                    f"[AgentB] Skipping duplicate action for target_id {tid}")
                 continue
             seen_targets.add(tid)
 
@@ -282,7 +277,8 @@ def agent_b(state: AgentAState) -> AgentAState:
             print(f"[AgentB] Skipping fill on non-input role {role} for {tid}")
             continue
         if action_type == "select" and role not in {"combobox", "menuitem"}:
-            print(f"[AgentB] Skipping select on non-select role {role} for {tid}")
+            print(
+                f"[AgentB] Skipping select on non-select role {role} for {tid}")
             continue
 
         # Require params for select/fill

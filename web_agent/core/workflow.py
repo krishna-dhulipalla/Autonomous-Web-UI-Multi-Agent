@@ -36,15 +36,6 @@ def capture_ui(state: AgentAState) -> AgentAState:
     elements = collect_clickable_elements(page)
     print(f"[AgentA] Collected {len(elements)} elements")
 
-    meta_path = run_dir / "elements.json"
-    meta = {
-        "url": page.url,
-        "screenshot": str(raw_screenshot),
-        "user_query": state["user_query"],
-        "elements": elements,
-    }
-    meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-
     state["screenshot_path"] = str(raw_screenshot)
     state["elements"] = elements
     state["playwright"] = p

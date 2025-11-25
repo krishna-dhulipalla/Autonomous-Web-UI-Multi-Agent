@@ -19,8 +19,8 @@ def score_elements(state: AgentAState) -> AgentAState:
         raise RuntimeError("No instruction available for scoring.")
 
     # Inlined and modified select_top logic
-    current_top_k = 15  # Default top_k
-    
+    current_top_k = 10  # Default top_k (non-form)
+
     # If form mode, increase top_k to capture more candidates
     is_form_mode = False
     if plan_steps and isinstance(plan_steps, dict) and plan_steps.get("type") == "form":
@@ -30,11 +30,12 @@ def score_elements(state: AgentAState) -> AgentAState:
         instr_lc = instruction.lower()
         if "fill" in instr_lc and ("form" in instr_lc or "details" in instr_lc):
             is_form_mode = True
-        
+
     if is_form_mode:
         current_top_k = 25
-        
-    print(f"[Ranker] Scoring elements. Instruction='{instruction[:50]}...' FormMode={is_form_mode} TopK={current_top_k} UI_Same={ui_same}")
+
+    print(
+        f"[Ranker] Scoring elements. Instruction='{instruction[:50]}...' FormMode={is_form_mode} TopK={current_top_k} UI_Same={ui_same}")
 
     scored = []
     for e in elements:
@@ -90,28 +91,33 @@ def score_elements(state: AgentAState) -> AgentAState:
             selected.append(e)
             used_ids.add(e["id"])
 
-    # Persist scored results alongside the existing metadata
+    # Persist scored results per step (no global elements.json)
     run_dir = Path(state["run_dir"])
-    meta_path = run_dir / "elements.json"
-    base_meta = {}
-    if meta_path.exists():
-        try:
-            base_meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        except Exception:
-            base_meta = {}
-
-    base_meta.setdefault("user_query", state.get("user_query"))
-    base_meta.setdefault("screenshot", state.get("screenshot_path"))
-
+    step = state.get("step", 0)
+    meta_path = run_dir / f"elements_scored_step_{step}.json"
+    base_meta = {
+        "user_query": state.get("user_query"),
+        "screenshot": state.get("screenshot_path"),
+    }
     persist_scored(meta_path, base_meta, scored_sorted, selected)
 
     # Debug: Save top candidates for this step
-    step = state.get("step", 0)
     debug_path = run_dir / f"candidates_step_{step}.json"
     try:
         debug_path.write_text(json.dumps(selected, indent=2), encoding="utf-8")
     except Exception as e:
         print(f"[Ranker] Failed to write debug candidates: {e}")
+
+    # Debug: Save full elements with instruction for this step
+    elements_debug_path = run_dir / f"elements_step_{step}.json"
+    try:
+        elements_payload = {
+            "instruction": instruction,
+            "elements": elements,
+        }
+        elements_debug_path.write_text(json.dumps(elements_payload, indent=2), encoding="utf-8")
+    except Exception as e:
+        print(f"[Ranker] Failed to write elements debug file: {e}")
 
     state["top_elements"] = selected
     return state

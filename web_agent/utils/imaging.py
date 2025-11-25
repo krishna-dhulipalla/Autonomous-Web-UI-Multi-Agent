@@ -8,8 +8,8 @@ from PIL import Image, ImageDraw, ImageFont
 from ..core.config import OUT_DIR
 
 
-def image_to_data_url(path: Path, max_size: int = 960) -> str:
-    """Load image, optionally downscale to reduce token usage, return JPEG data URL."""
+def image_to_data_url(path: Path, max_size: int = 720, quality: int = 65) -> str:
+    """Load image, downscale to reduce token usage, return JPEG data URL."""
     img = Image.open(path).convert("RGB")
     w, h = img.size
     if max(w, h) > max_size:
@@ -17,7 +17,7 @@ def image_to_data_url(path: Path, max_size: int = 960) -> str:
         img = img.resize((int(w * scale), int(h * scale)), Image.LANCZOS)
 
     buf = BytesIO()
-    img.save(buf, format="JPEG", quality=75)
+    img.save(buf, format="JPEG", quality=quality)
     b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
     return f"data:image/jpeg;base64,{b64}"
 
