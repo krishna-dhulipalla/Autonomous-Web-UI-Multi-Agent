@@ -5,13 +5,13 @@ A two-agent system that automates browser workflows using Playwright plus vision
 
 ## 2) Architecture Diagram
 ```mermaid
-flowchart TD
-    A[Capture UI (Playwright)] --> B[Agent A (Vision plan)]
-    B --> C[Ranker (Score/Select DOM)]
-    C --> D[Agent B (Actions JSON)]
-    D --> E[Executor (Playwright)]
-    E --> F[Finalize/History + Artifacts]
-    F -->|loop if not done| A
+graph TD
+A["Capture UI (Playwright)"] --> B["Agent A (Vision plan)"];
+B --> C["Ranker (Score and Select DOM)"];
+C --> D["Agent B (Actions JSON)"];
+D --> E["Executor (Playwright)"];
+E --> F["Finalize / History / Artifacts"];
+F -->|loop if not done| A;
 ```
 
 ## 3) Folder Structure
