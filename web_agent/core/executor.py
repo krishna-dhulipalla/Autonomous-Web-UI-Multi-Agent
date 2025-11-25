@@ -98,19 +98,26 @@ def _safe_select(page, locator, option: str):
 
     # Attempt 2: Text match (for non-standard dropdowns)
     try:
-        # Look for visible text in the dropdown area
         page.locator(f"text={option}").first.click(timeout=3000)
         return
-    except Exception:
-        print(f"[Executor] Text match select failed for '{option}', trying typeahead...")
-
-    # Attempt 3: Typeahead fallback (fill + Enter)
-    # This is risky if the control isn't a combobox, but we are here because select failed.
-    try:
-        locator.fill(option, timeout=3000)
-        locator.press("Enter", timeout=3000)
     except Exception as e:
-        raise RuntimeError(f"All select strategies failed for '{option}': {e}")
+        raise RuntimeError(f"Select failed for '{option}': {e}")
+
+
+def _dismiss_overlays(page) -> None:
+    """Best-effort overlay dismiss (escape + backdrop click)."""
+    try:
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(200)
+    except Exception:
+        pass
+    try:
+        backdrop = page.locator("[data-animated-popover-backdrop]").first
+        if backdrop.count() and backdrop.is_visible():
+            backdrop.click(timeout=500)
+            page.wait_for_timeout(200)
+    except Exception:
+        pass
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
@@ -150,6 +157,8 @@ def execute_plan(state: AgentAState) -> AgentAState:
         start = time.time()
         try:
             if action == "click":
+                # Clear any lingering overlays before submit-like clicks
+                _dismiss_overlays(page)
                 _safe_click(locator)
             elif action == "fill":
                 text = params.get("text") or params.get("value") or ""
@@ -164,6 +173,11 @@ def execute_plan(state: AgentAState) -> AgentAState:
                 # Guard: only select on dropdown-like roles
                 if (elem.get("role") or "") not in {"combobox", "menuitem"}:
                     print(f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}")
+                    continue
+                # Basic value compatibility check: avoid feeding date-ish values into non-date controls
+                opt_lower = option.lower()
+                if "status" in (elem.get("name") or "").lower() and any(tok in opt_lower for tok in ["today", "tomorrow", "next week", "next day", "next month"]):
+                    print(f"[Executor] Skipping select on status-like control with date-like option '{option}'")
                     continue
                 _safe_select(page, locator, option)
             elif action == "press":
