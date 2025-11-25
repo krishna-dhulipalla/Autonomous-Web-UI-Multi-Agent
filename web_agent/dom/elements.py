@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from .accessibility import accessible_name, nearest_landmark
-from .config import CLICKABLE_ROLES
+from ..core.config import CLICKABLE_ROLES
 
 
 def collect_clickable_elements(page) -> List[Dict[str, Any]]:
@@ -64,23 +64,26 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
 
     # Collect contenteditable elements (often rich text editors)
     try:
-        ce_loc = page.locator('[contenteditable]:not([role])') # Avoid duplicates if they have a role
+        # Avoid duplicates if they have a role
+        ce_loc = page.locator('[contenteditable]:not([role])')
         ce_count = ce_loc.count()
         for i in range(ce_count):
             el = ce_loc.nth(i)
-            if not el.is_visible(): continue
+            if not el.is_visible():
+                continue
             box = el.bounding_box()
-            if not box or (box["width"] * box["height"] < 50): continue
-            
+            if not box or (box["width"] * box["height"] < 50):
+                continue
+
             name = accessible_name(el)
             landmark = nearest_landmark(el)
             placeholder = el.get_attribute("placeholder") or ""
-            
+
             elem_id = str(idx)
             idx += 1
-            
+
             snippet = f"page.locator('[contenteditable]').nth({i})"
-            
+
             elements.append({
                 "id": elem_id,
                 "role": "contenteditable",
@@ -114,7 +117,8 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
             def sort_key(x):
                 has_name = bool(x["name"])
                 name_len = len(x["name"]) if x["name"] else 0
-                role_prio = 1 if x["role"] in ("button", "textbox", "combobox") else 0
+                role_prio = 1 if x["role"] in (
+                    "button", "textbox", "combobox") else 0
                 return (has_name, name_len, role_prio)
 
             group.sort(key=sort_key, reverse=True)

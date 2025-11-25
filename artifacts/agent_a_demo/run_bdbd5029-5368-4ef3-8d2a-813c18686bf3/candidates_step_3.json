@@ -1,0 +1,137 @@
+[
+  {
+    "id": "27",
+    "role": "button",
+    "name": "Create issue",
+    "landmark": null,
+    "playwright_snippet": "page.get_by_role(\"button\", name='Create issue')",
+    "placeholder": "",
+    "score": 9.772727272727273
+  },
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "placeholder": "",
+    "score": 9.5
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Search workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+    "placeholder": "",
+    "score": 8.0
+  },
+  {
+    "id": "0",
+    "role": "button",
+    "name": "Testing_multi_agent_UI Workspace Menu",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "5",
+    "role": "button",
+    "name": "Workspace",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "17",
+    "role": "button",
+    "name": "Open details",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Open details')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "19",
+    "role": "button",
+    "name": "Display options",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "20",
+    "role": "button",
+    "name": "Collapse group",
+    "landmark": "main",
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Collapse group')",
+    "placeholder": "",
+    "score": 7.0
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Create new issue",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+    "placeholder": "",
+    "score": 6.90909090909091
+  },
+  {
+    "id": "3",
+    "role": "button",
+    "name": "Inbox",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Inbox')",
+    "placeholder": "",
+    "score": 6.5
+  },
+  {
+    "id": "4",
+    "role": "button",
+    "name": "My issues",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='My issues')",
+    "placeholder": "",
+    "score": 6.5
+  },
+  {
+    "id": "6",
+    "role": "button",
+    "name": "Projects",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Projects')",
+    "placeholder": "",
+    "score": 6.5
+  },
+  {
+    "id": "7",
+    "role": "button",
+    "name": "Views",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Views')",
+    "placeholder": "",
+    "score": 6.5
+  },
+  {
+    "id": "9",
+    "role": "button",
+    "name": "Your teams",
+    "landmark": "navigation",
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Your teams')",
+    "placeholder": "",
+    "score": 6.5
+  }
+]

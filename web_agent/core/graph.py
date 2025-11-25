@@ -1,9 +1,9 @@
 from langgraph.graph import END, StateGraph
 
-from .agent import agent_a
-from .agent_b import agent_b
+from ..agents.navigator import agent_a
+from ..agents.operator import agent_b
 from .executor import execute_plan
-from .ranker import score_elements
+from ..dom.ranker import score_elements
 from .types import AgentAState
 from .workflow import capture_ui
 

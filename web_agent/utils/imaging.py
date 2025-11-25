@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 
 from PIL import Image, ImageDraw, ImageFont
 
-from .config import OUT_DIR
+from ..core.config import OUT_DIR
 
 
 def image_to_data_url(path: Path, max_size: int = 960) -> str:

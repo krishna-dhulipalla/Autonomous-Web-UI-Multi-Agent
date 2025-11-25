@@ -30,6 +30,7 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
         "tried_ids": [],
         "top_elements": [],
         "actions": [],
+        "followup_hint": None,
         "after_screenshot": None,
         "playwright": None,
         "context": None,

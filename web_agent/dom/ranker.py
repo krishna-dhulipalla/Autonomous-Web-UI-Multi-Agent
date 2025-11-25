@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Optional, Dict
 
 from .scoring import persist_scored, score_element
-from .types import AgentAState
+from ..core.types import AgentAState
 
 
 def score_elements(state: AgentAState) -> AgentAState:

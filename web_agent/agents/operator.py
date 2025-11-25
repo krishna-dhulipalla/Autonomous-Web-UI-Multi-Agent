@@ -5,7 +5,7 @@ from typing import List
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
-from .types import AgentAState
+from ..core.types import AgentAState
 
 
 def format_candidates(candidates: List[dict]) -> str:

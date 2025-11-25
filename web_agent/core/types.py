@@ -10,6 +10,7 @@ class AgentAState(TypedDict):
     elements: List[Dict[str, Any]]
     instruction: Optional[str]
     plan_steps: Optional[Any]
+    tried_ids: Optional[List[str]]
     top_elements: List[Dict[str, Any]]
     actions: List[Dict[str, Any]]
     followup_hint: Optional[str]

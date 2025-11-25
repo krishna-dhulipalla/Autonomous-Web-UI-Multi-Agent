@@ -3,7 +3,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 from .config import OUT_DIR, PROFILE_DIR, TEAM_URL
-from .elements import collect_clickable_elements
+from ..dom.elements import collect_clickable_elements
 from .types import AgentAState
 
 

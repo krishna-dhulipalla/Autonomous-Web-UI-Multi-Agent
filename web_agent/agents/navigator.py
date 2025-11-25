@@ -4,8 +4,8 @@ from pathlib import Path
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
-from .imaging import image_to_data_url
-from .types import AgentAState
+from ..core.types import AgentAState
+from ..utils.imaging import image_to_data_url
 
 
 def agent_a(state: AgentAState) -> AgentAState:
