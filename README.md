@@ -36,7 +36,7 @@ MD -->|yes| D1["DOM Verification"]
 D1 -->|pass| G["Task Complete"]
 D1 -->|fail| V1["Vision Verification<br/>(frozen screenshot)"]
 V1 -->|pass| G
-V1 -->|fail| A["Continue Loop"]
+V1 -->|fail| A["Capture UI<br/>(Playwright)"]
 
 %% maybe_done = false
 MD -->|no| A
