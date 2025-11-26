@@ -152,96 +152,106 @@ def _dismiss_overlays(page) -> None:
     _dismiss_overlays_for_target(page, None, target_open=False)
 
 
+def _extract_form_expectations(state: AgentAState) -> Dict[str, str]:
+    expectations: Dict[str, str] = {}
+    plan = state.get("plan_steps") or {}
+    fields = plan.get("fields") if isinstance(plan, dict) else []
+    for f in fields or []:
+        label = (f.get("label") or "").lower()
+        val = f.get("value") or f.get("option") or ""
+        if not val:
+            continue
+        if "title" in label:
+            expectations["title"] = val
+        elif "description" in label:
+            expectations["description"] = val
+        elif "priority" in label:
+            expectations["priority"] = val
+        elif "assignee" in label:
+            expectations["assignee"] = val
+        elif "label" in label:
+            expectations["labels"] = val
+    return expectations
+
+
+def _dom_confirm_issue(page, expectations: Dict[str, str]) -> bool:
+    """Lightweight DOM check that expected values are visible on the page."""
+    if not expectations:
+        return False
+    try:
+        for val in expectations.values():
+            locator = page.locator(f"text={val}").first
+            if not locator.count():
+                return False
+            if not locator.is_visible(timeout=1500):
+                return False
+        return True
+    except Exception:
+        return False
+
+
 def _safe_select(page, locator, option: str, role: str = "", target_name: str = "") -> bool:
-    """Open combobox, type to filter, Enter, fallback click inside panel, confirm value, then close."""
+    """Simple, best-effort combobox select.
+
+    This intentionally keeps logic minimal and fast:
+    - Try to skip if the value already appears to be set.
+    - Click the combobox to open it.
+    - Click the option by its visible text.
+    - Do not perform heavy verification; DOM confirmation later is the source of truth.
+
+    Returns True if we managed to run the sequence without a hard error.
+    """
     option = option or ""
     target_name = target_name or ""
 
-    # Idempotency: skip if already selected
-    if _value_matches(locator, option):
-        print(
-            f"[Executor] Select skipped; '{option}' already set for '{target_name}'.")
-        return True
+    # Prefer the first match if locator resolves to multiple elements.
+    try:
+        if locator.count() > 1:
+            locator = locator.nth(0)
+    except Exception:
+        pass
 
-    def _find_panel() -> Optional[Any]:
-        try:
-            candidates = page.locator(
-                "[role='listbox'], [role='menu'], [data-radix-portal], [data-overlay-container]")
-            if candidates.count():
-                return candidates.first
-        except Exception:
-            return None
-        return None
-
-    attempts = 0
-    while attempts < 2:
-        attempts += 1
-        try:
-            locator.wait_for(state="visible", timeout=5000)
-        except Exception:
-            pass
-
-        expanded = False
-        try:
-            expanded = (locator.get_attribute(
-                "aria-expanded") or "").lower() == "true"
-        except Exception:
-            expanded = False
-
-        # Clear unrelated overlays before opening
-        if _is_target_covered(page, locator):
-            _dismiss_overlays_for_target(page, locator, target_open=expanded)
-
-        _dismiss_overlays_for_target(page, locator, target_open=expanded)
-
-        try:
-            locator.click(timeout=5000)
-        except Exception as e:
-            if attempts >= 2:
-                raise RuntimeError(f"Select failed to open combobox: {e}")
-            continue
-
-        panel = _find_panel()
-        try:
-            panel.wait_for(state="visible", timeout=5000)
-        except Exception:
-            # Even if panel didn't resolve, try typing and pressing Enter
-            pass
-
-        # Keyboard filter + Enter
-        try:
-            page.keyboard.type(option, delay=20)
-            page.wait_for_timeout(250)
-            page.keyboard.press("Enter")
-        except Exception:
-            pass
-
-        # Fallback: scoped click within panel
-        try:
-            if panel:
-                candidate = panel.locator(f"text={option}").first
-                if candidate.count():
-                    candidate.click(timeout=4000)
-        except Exception:
-            pass
-
-        page.wait_for_timeout(200)
-
+    # Cheap idempotency check: if it already looks like the desired value, skip work.
+    try:
         if _value_matches(locator, option):
-            # Close panel cleanly
-            try:
-                page.keyboard.press("Escape")
-            except Exception:
-                pass
+            print(
+                f"[Executor] Select skipped; '{option}' already set for '{target_name}'.")
             return True
+    except Exception:
+        pass
 
-        # Retry once if overlay interference or value didn't stick
-        try:
-            page.keyboard.press("Escape")
-        except Exception:
-            pass
+    # Make sure the combobox is visible, but fail fast if not.
+    try:
+        locator.wait_for(state="visible", timeout=2000)
+    except Exception as e:
+        raise RuntimeError(
+            f"Select combobox not visible for '{target_name}': {e}")
 
-    raise RuntimeError(f"Select failed for '{option}' on '{target_name}'")
+    # Open the combobox.
+    try:
+        locator.click(timeout=2000)
+    except Exception as e:
+        raise RuntimeError(
+            f"Select failed to open combobox for '{target_name}': {e}")
+
+    # Best-effort: click the option by its text.
+    try:
+        option_locator = page.locator(f"text={option}").first
+        option_locator.wait_for(state="visible", timeout=2000)
+        option_locator.click(timeout=2000)
+    except Exception as e:
+        # We log but do not do heavy recovery here; DOM confirmation will judge success.
+        print(
+            f"[Executor] Option click best-effort failed for '{option}' on '{target_name}': {e}")
+        return False
+
+    # Small settle to let the UI update.
+    try:
+        page.wait_for_timeout(150)
+    except Exception:
+        pass
+
+    return True
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
@@ -250,6 +260,9 @@ def execute_plan(state: AgentAState) -> AgentAState:
     if not actions:
         print("[Executor] No actions to execute (no-op).")
         return state
+    step_start = time.time()
+    slowest_action = ("", 0.0)
+    failure_notes: List[str] = []
 
     run_dir = Path(state["run_dir"])
     # Use in-memory elements/top_k instead of reading elements.json
@@ -265,6 +278,11 @@ def execute_plan(state: AgentAState) -> AgentAState:
 
     executed_ids = []
     for idx, plan in enumerate(actions, start=1):
+        if time.time() - step_start > 20:
+            failure_notes.append(
+                "Executor step budget (20s) exceeded; remaining actions skipped.")
+            print("[Executor] Step time budget exceeded; skipping remaining actions.")
+            break
         target_id = plan.get("target_id")
         action = plan.get("action")
         params = plan.get("params") or {}
@@ -304,16 +322,35 @@ def execute_plan(state: AgentAState) -> AgentAState:
                 # Guard: only select on dropdown-like roles
                 if (elem.get("role") or "") not in {"combobox", "menuitem"}:
                     print(
-                        f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}")
+                        f"[Executor] Skipping select on non-select role {elem.get('role')} for {target_id}"
+                    )
                     continue
                 # Basic value compatibility check: avoid feeding date-ish values into non-date controls
                 opt_lower = option.lower()
-                if "status" in (elem.get("name") or "").lower() and any(tok in opt_lower for tok in ["today", "tomorrow", "next week", "next day", "next month"]):
+                if "status" in (elem.get("name") or "").lower() and opt_lower in [
+                    "today",
+                    "tomorrow",
+                    "next week",
+                    "next day",
+                    "next month",
+                ]:
                     print(
-                        f"[Executor] Skipping select on status-like control with date-like option '{option}'")
+                        f"[Executor] Skipping select on status-like control with date-like option '{option}'"
+                    )
                     continue
-                _safe_select(page, locator, option, role=elem.get(
-                    "role"), target_name=elem.get("name"))
+
+                ok = _safe_select(
+                    page,
+                    locator,
+                    option,
+                    role=elem.get("role"),
+                    target_name=elem.get("name"),
+                )
+                if not ok:
+                    # Fast failure: log and let the outer try/except mark this action as failed.
+                    raise RuntimeError(
+                        f"Select best-effort failed for '{option}' on '{elem.get('name')}'"
+                    )
             elif action == "press":
                 key = params.get("key") or params.get("keys")
                 if not key:
@@ -323,18 +360,34 @@ def execute_plan(state: AgentAState) -> AgentAState:
                 raise RuntimeError(f"Unknown action type: {action}")
             page.wait_for_timeout(300)
             duration = time.time() - start
+            if duration > slowest_action[1]:
+                slowest_action = (f"{action} {target_id}", duration)
             print(f"[Executor] Action succeeded in {duration:.2f}s")
             executed_ids.append(target_id)
         except Exception as e:
             duration = time.time() - start
             print(
                 f"[Executor] Action failed (skipping) in {duration:.2f}s: {e}")
+            failure_notes.append(
+                f"{action} failed on '{elem.get('name')}' ({e})")
             continue
+
+    total_duration = time.time() - step_start
+    print(
+        f"[Executor] Step timing: total={total_duration:.2f}s slowest={slowest_action[0]} ({slowest_action[1]:.2f}s)")
 
     # Capture after-action screenshot
     after_path = run_dir / "after_action.png"
     page.screenshot(path=str(after_path), full_page=True)
     print(f"[Executor] After-action screenshot: {after_path}")
+
+    # Basic DOM confirmation for form submissions
+    expectations = _extract_form_expectations(state)
+    if expectations and _dom_confirm_issue(page, expectations):
+        print("[Executor] DOM confirmation passed; marking goal done.")
+        state["done"] = True
+        state["completion_via"] = state.get(
+            "completion_via") or "dom_confirmation"
 
     # Compute hash for UI change detection
     try:
@@ -394,5 +447,9 @@ def execute_plan(state: AgentAState) -> AgentAState:
 
     # Browser stays open for the next step in the loop
     state["after_screenshot"] = str(after_path)
+    if failure_notes:
+        hint = "; ".join(failure_notes)
+        existing_hint = state.get("followup_hint") or ""
+        state["followup_hint"] = (existing_hint + " " + hint).strip()
 
     return state

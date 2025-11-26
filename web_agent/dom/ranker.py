@@ -5,6 +5,7 @@ from typing import List, Optional, Dict
 from .scoring import persist_scored, score_element
 from ..core.types import AgentAState
 
+TEXT_INPUT_ROLES = {"textbox", "textarea", "searchbox", "contenteditable"}
 
 def score_elements(state: AgentAState) -> AgentAState:
     """Score elements using the instruction and select top 10."""
@@ -15,6 +16,8 @@ def score_elements(state: AgentAState) -> AgentAState:
     ui_same = state.get("ui_same", False)
     plan_steps: Optional[Dict] = state.get(
         "plan_steps")  # Get plan_steps from state
+    form_mode = bool(plan_steps and isinstance(plan_steps, dict)
+                     and plan_steps.get("type") == "form")
 
     if not instruction:
         raise RuntimeError("No instruction available for scoring.")
@@ -23,10 +26,8 @@ def score_elements(state: AgentAState) -> AgentAState:
     current_top_k = 10  # Default top_k (non-form)
 
     # If form mode, increase top_k to capture more candidates
-    is_form_mode = False
-    if plan_steps and isinstance(plan_steps, dict) and plan_steps.get("type") == "form":
-        is_form_mode = True
-    else:
+    is_form_mode = form_mode
+    if not is_form_mode:
         # Stricter check: must look like a form-filling instruction
         instr_lc = instruction.lower()
         if "fill" in instr_lc and ("form" in instr_lc or "details" in instr_lc):
@@ -39,6 +40,14 @@ def score_elements(state: AgentAState) -> AgentAState:
         f"[Ranker] Scoring elements. Instruction='{instruction[:50]}...' FormMode={is_form_mode} TopK={current_top_k} UI_Same={ui_same}")
 
     scored = []
+    field_hints = {
+        "title_ids": [],
+        "description_ids": [],
+        "priority_ids": [],
+        "assignee_ids": [],
+        "label_ids": [],
+        "submit_ids": [],
+    }
     for e in elements:
         s = score_element(e, instruction, tried_ids, ui_same)
 
@@ -56,6 +65,23 @@ def score_elements(state: AgentAState) -> AgentAState:
                 if f_label and (f_label in e_name or f_label in e_placeholder):
                     s += 3.0  # Strong boost for label match
 
+        # Collect deterministic buckets for form mode
+        e_name = (e.get("name") or "").lower()
+        role = (e.get("role") or "").lower()
+        if is_form_mode:
+            if role in TEXT_INPUT_ROLES and "issue title" in e_name:
+                field_hints["title_ids"].append(e["id"])
+            if role in TEXT_INPUT_ROLES and "issue description" in e_name:
+                field_hints["description_ids"].append(e["id"])
+            if role == "combobox" and "priority" in e_name:
+                field_hints["priority_ids"].append(e["id"])
+            if role == "combobox" and "assignee" in e_name:
+                field_hints["assignee_ids"].append(e["id"])
+            if role == "combobox" and "labels" in e_name:
+                field_hints["label_ids"].append(e["id"])
+            if role == "button" and "create issue" in e_name:
+                field_hints["submit_ids"].append(e["id"])
+
         e_copy = {k: e.get(k) for k in ("id", "role", "name",
                                         "landmark", "playwright_snippet", "placeholder", "value")}
         e_copy["score"] = s
@@ -66,10 +92,33 @@ def score_elements(state: AgentAState) -> AgentAState:
     selected = []
     used_ids = set()
 
+    all_buckets_present = all(field_hints.values()) if is_form_mode else False
+
+    if all_buckets_present:
+        # Prefer deterministic form buckets first
+        ordered_buckets = [
+            field_hints["title_ids"],
+            field_hints["description_ids"],
+            field_hints["priority_ids"],
+            field_hints["assignee_ids"],
+            field_hints["label_ids"],
+            field_hints["submit_ids"],
+        ]
+        for bucket in ordered_buckets:
+            for bid in bucket:
+                if bid in used_ids:
+                    continue
+                match = next((e for e in scored_sorted if e["id"] == bid), None)
+                if match:
+                    selected.append(match)
+                    used_ids.add(bid)
+
     # baseline top_k
     for e in scored_sorted:
         if len(selected) >= current_top_k:
             break
+        if e["id"] in used_ids:
+            continue
         selected.append(e)
         used_ids.add(e["id"])
 
@@ -119,10 +168,12 @@ def score_elements(state: AgentAState) -> AgentAState:
         elements_payload = {
             "instruction": instruction,
             "elements": elements,
+            "field_hints": field_hints,
         }
         elements_debug_path.write_text(json.dumps(elements_payload, indent=2), encoding="utf-8")
     except Exception as e:
         print(f"[Ranker] Failed to write elements debug file: {e}")
 
     state["top_elements"] = selected
+    state["field_hints"] = field_hints
     return state

@@ -1,0 +1,578 @@
+[
+  {
+    "id": "0",
+    "role": "button",
+    "name": "Open Help menu",
+    "landmark": null,
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 10,
+      "y": 686.0000610351562,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"button\", name='Open Help menu')",
+    "name_hint": "Open Help menu"
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Change email",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1032.2857666015625,
+      "y": 215.1428680419922,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Change email')",
+    "name_hint": "Change email"
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Delete",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 993.27685546875,
+      "y": 479.2857360839844,
+      "width": 69.0089111328125,
+      "height": 32
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Delete')",
+    "name_hint": "Delete"
+  },
+  {
+    "id": "3",
+    "role": "link",
+    "name": "Back to app",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 16,
+      "width": 108.37500667572021,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Back to app')",
+    "name_hint": "Back to app"
+  },
+  {
+    "id": "4",
+    "role": "link",
+    "name": "Preferences",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 53.000003814697266,
+      "width": 209.71429443359375,
+      "height": 27.999996185302734
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Preferences')",
+    "name_hint": "Preferences"
+  },
+  {
+    "id": "5",
+    "role": "link",
+    "name": "Profile",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 82,
+      "width": 209.71429443359375,
+      "height": 28.00000762939453
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Profile')",
+    "name_hint": "Profile"
+  },
+  {
+    "id": "6",
+    "role": "link",
+    "name": "Notifications",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 111.00000762939453,
+      "width": 209.71429443359375,
+      "height": 27.99999237060547
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Notifications')",
+    "name_hint": "Notifications"
+  },
+  {
+    "id": "7",
+    "role": "link",
+    "name": "Security & access",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 140,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Security & access')",
+    "name_hint": "Security & access"
+  },
+  {
+    "id": "8",
+    "role": "link",
+    "name": "Connected accounts",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 169,
+      "width": 209.71429443359375,
+      "height": 28.000015258789062
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Connected accounts')",
+    "name_hint": "Connected accounts"
+  },
+  {
+    "id": "9",
+    "role": "link",
+    "name": "Labels",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 235.4285888671875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Labels')",
+    "name_hint": "Labels"
+  },
+  {
+    "id": "10",
+    "role": "link",
+    "name": "Templates",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 264.4285888671875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Templates')",
+    "name_hint": "Templates"
+  },
+  {
+    "id": "11",
+    "role": "link",
+    "name": "SLAs",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 293.4285888671875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='SLAs')",
+    "name_hint": "SLAs"
+  },
+  {
+    "id": "12",
+    "role": "link",
+    "name": "Labels",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 359.8571472167969,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Labels')",
+    "name_hint": "Labels"
+  },
+  {
+    "id": "13",
+    "role": "link",
+    "name": "Templates",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 388.8571472167969,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Templates')",
+    "name_hint": "Templates"
+  },
+  {
+    "id": "14",
+    "role": "link",
+    "name": "Statuses",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 417.8571472167969,
+      "width": 209.71429443359375,
+      "height": 28.000030517578125
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Statuses')",
+    "name_hint": "Statuses"
+  },
+  {
+    "id": "15",
+    "role": "link",
+    "name": "Updates",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 446.857177734375,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Updates')",
+    "name_hint": "Updates"
+  },
+  {
+    "id": "16",
+    "role": "link",
+    "name": "Initiatives",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 513.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Initiatives')",
+    "name_hint": "Initiatives"
+  },
+  {
+    "id": "17",
+    "role": "link",
+    "name": "Documents",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 542.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Documents')",
+    "name_hint": "Documents"
+  },
+  {
+    "id": "18",
+    "role": "link",
+    "name": "Customer requests",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 571.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Customer requests')",
+    "name_hint": "Customer requests"
+  },
+  {
+    "id": "19",
+    "role": "link",
+    "name": "Pulse",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 600.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Pulse')",
+    "name_hint": "Pulse"
+  },
+  {
+    "id": "20",
+    "role": "link",
+    "name": "AI",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 629.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='AI')",
+    "name_hint": "AI"
+  },
+  {
+    "id": "21",
+    "role": "link",
+    "name": "Agents",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 658.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Agents')",
+    "name_hint": "Agents"
+  },
+  {
+    "id": "22",
+    "role": "link",
+    "name": "Asks",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 687.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Asks')",
+    "name_hint": "Asks"
+  },
+  {
+    "id": "23",
+    "role": "link",
+    "name": "Emojis",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 716.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Emojis')",
+    "name_hint": "Emojis"
+  },
+  {
+    "id": "24",
+    "role": "link",
+    "name": "Integrations",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 745.2857666015625,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Integrations')",
+    "name_hint": "Integrations"
+  },
+  {
+    "id": "25",
+    "role": "link",
+    "name": "Workspace",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 811.7142944335938,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Workspace')",
+    "name_hint": "Workspace"
+  },
+  {
+    "id": "26",
+    "role": "link",
+    "name": "Teams",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 840.7142944335938,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Teams')",
+    "name_hint": "Teams"
+  },
+  {
+    "id": "27",
+    "role": "link",
+    "name": "Members",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 869.7142944335938,
+      "width": 209.71429443359375,
+      "height": 28.00006103515625
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Members')",
+    "name_hint": "Members"
+  },
+  {
+    "id": "28",
+    "role": "link",
+    "name": "Security",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 898.71435546875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Security')",
+    "name_hint": "Security"
+  },
+  {
+    "id": "29",
+    "role": "link",
+    "name": "API",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 927.71435546875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='API')",
+    "name_hint": "API"
+  },
+  {
+    "id": "30",
+    "role": "link",
+    "name": "Applications",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 956.71435546875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Applications')",
+    "name_hint": "Applications"
+  },
+  {
+    "id": "31",
+    "role": "link",
+    "name": "Billing",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 985.71435546875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Billing')",
+    "name_hint": "Billing"
+  },
+  {
+    "id": "32",
+    "role": "link",
+    "name": "Import / Export",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 1014.71435546875,
+      "width": 209.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Import / Export')",
+    "name_hint": "Import / Export"
+  },
+  {
+    "id": "33",
+    "role": "link",
+    "name": "Engineering",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 20,
+      "y": 1081.1429443359375,
+      "width": 205.71429443359375,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Engineering')",
+    "name_hint": "Engineering"
+  },
+  {
+    "id": "34",
+    "role": "textbox",
+    "name": "",
+    "landmark": "main",
+    "placeholder": "Full name",
+    "value": "Krishna Vamsi Dhulipalla",
+    "bounding_box": {
+      "x": 876.2857666015625,
+      "y": 271.14288330078125,
+      "width": 180,
+      "height": 32
+    },
+    "playwright_snippet": "page.get_by_role(\"textbox\").nth(0)",
+    "name_hint": ""
+  },
+  {
+    "id": "35",
+    "role": "textbox",
+    "name": "",
+    "landmark": "main",
+    "placeholder": "username",
+    "value": "kdhulipalla13",
+    "bounding_box": {
+      "x": 876.2857666015625,
+      "y": 331.14288330078125,
+      "width": 180,
+      "height": 32
+    },
+    "playwright_snippet": "page.get_by_role(\"textbox\").nth(1)",
+    "name_hint": ""
+  }
+]

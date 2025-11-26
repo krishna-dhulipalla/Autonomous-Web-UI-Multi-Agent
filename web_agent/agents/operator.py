@@ -25,10 +25,11 @@ def format_candidates(candidates: List[dict]) -> str:
 
 
 def _heuristic_match(value: str, name: str) -> str:
-    """Return a semantic type for a value or element name."""
-    # Check both value and name for keywords
-    text = (value + " " + name).lower()
+    """Return a semantic type for a value or element name.
 
+    NOTE: Kept for future use, but no longer used in normalization.
+    """
+    text = (value + " " + name).lower()
     if "@" in text and "." in text:
         return "email"
     if any(x in text for x in ["high", "medium", "low", "urgent", "priority"]):
@@ -45,14 +46,19 @@ def agent_b(state: AgentAState) -> AgentAState:
     if not top:
         raise RuntimeError("No top elements available for Agent B.")
 
-    # Create role map for validation
+    # Create role/name maps for validation
     role_by_id = {str(e.get("id")): (e.get("role") or "") for e in top}
     name_by_id = {str(e.get("id")): (e.get("name") or "") for e in top}
 
     instruction = state.get("instruction") or state.get("user_query") or ""
     plan_steps = state.get("plan_steps")
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1,
-                     timeout=30, max_retries=1)
+    field_hints = state.get("field_hints") or {}
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0.1,
+        timeout=30,
+        max_retries=1,
+    )
 
     system_msg = SystemMessage(
         content=(
@@ -61,6 +67,7 @@ def agent_b(state: AgentAState) -> AgentAState:
             "- A high-level `instruction` from Agent A (Navigator), which often includes a short description of the current UI context\n"
             "- An optional structured `plan_steps` (for forms)\n"
             "- A list of up to 10 DOM candidates with stable `target_id`, labels, roles, and hints\n"
+            "- Optional `field_hints` containing ids that best match form fields (title, description, priority, assignee, labels, submit). Prefer these ids when mapping fields.\n"
             "\n"
             "Your job:\n"
             "- Interpret the instruction and UI context.\n"
@@ -122,6 +129,7 @@ def agent_b(state: AgentAState) -> AgentAState:
             "WHEN `plan_steps` (FORM) IS PROVIDED\n"
             "====================\n"
             "- Interpret `plan_steps` as a macro: fill ALL fields it lists, then submit if `submit` is true.\n"
+            "- If `field_hints.<field>_ids` is provided, you must prefer those ids for the matching field label before considering other candidates.\n"
             "- For each field in `plan_steps.fields`, choose the most plausible candidate by label/role:\n"
             "  * text -> action: fill\n"
             "  * select/dropdown -> action: select (option = visible label)\n"
@@ -186,24 +194,34 @@ def agent_b(state: AgentAState) -> AgentAState:
             "- For simple navigation steps, the `actions` list MUST contain exactly one item.\n"
         )
     )
+
     history_tail = (state.get("history") or [])[-2:]
     ui_same = state.get("ui_same", False)
     plan_summary = "form" if plan_steps else "navigation"
     plan_flag = "present" if plan_steps is not None else "null"
-    instr_preview = instruction if len(instruction) <= 200 else instruction[:197] + "..."
-    print(f"[AgentB] Input step={step_num} mode={plan_summary} ui_same={ui_same} plan_steps={plan_flag} history_tail={history_tail}")
+    instr_preview = instruction if len(
+        instruction) <= 200 else instruction[:197] + "..."
+    print(
+        f"[AgentB] Input step={step_num} mode={plan_summary} ui_same={ui_same} plan_steps={plan_flag} history_tail={history_tail}"
+    )
     if plan_steps and isinstance(plan_steps, dict):
         print(
-            f"[AgentB] Instruction='{instr_preview}' plan_fields={len(plan_steps.get('fields', []))} submit={bool(plan_steps.get('submit'))} candidates={len(top)} plan_steps={plan_flag}")
+            f"[AgentB] Instruction='{instr_preview}' plan_fields={len(plan_steps.get('fields', []))} submit={bool(plan_steps.get('submit'))} candidates={len(top)} plan_steps={plan_flag}"
+        )
     else:
-        print(f"[AgentB] Instruction='{instr_preview}' candidates={len(top)} plan_steps={plan_flag}")
+        print(
+            f"[AgentB] Instruction='{instr_preview}' candidates={len(top)} plan_steps={plan_flag}"
+        )
 
-    plan_json = json.dumps(plan_steps, indent=2) if plan_steps is not None else "null"
+    plan_json = json.dumps(
+        plan_steps, indent=2) if plan_steps is not None else "null"
+    field_hints_json = json.dumps(field_hints, indent=2)
     human_text = (
         f"User goal/instruction: {instruction}\n"
         f"Recent history (last {len(history_tail)}): {history_tail}\n"
         f"ui_same: {ui_same}\n"
         f"plan_steps (may be null):\n{plan_json}\n\n"
+        f"field_hints (preferred ids per field):\n{field_hints_json}\n\n"
         "Candidates (id, role, name, landmark):\n"
         f"{format_candidates(top)}\n\n"
         "Return JSON as specified in the system message."
@@ -218,7 +236,8 @@ def agent_b(state: AgentAState) -> AgentAState:
 
     if isinstance(raw, list):
         raw_text = "".join(
-            [r.get("text", "") if isinstance(r, dict) else str(r) for r in raw])
+            [r.get("text", "") if isinstance(r, dict) else str(r) for r in raw]
+        )
     else:
         raw_text = raw if isinstance(raw, str) else str(raw)
 
@@ -250,23 +269,27 @@ def agent_b(state: AgentAState) -> AgentAState:
     if isinstance(plan, dict):
         if "actions" not in plan:
             # single action object
-            plan = {"actions": [plan], "followup_hint": plan.get(
-                "followup_hint", "") if isinstance(plan, dict) else ""}
+            plan = {
+                "actions": [plan],
+                "followup_hint": plan.get("followup_hint", "")
+                if isinstance(plan, dict)
+                else "",
+            }
     else:
         plan = {"actions": [], "followup_hint": ""}
 
-    maybe_done = bool(plan.get("maybe_done", False)) if isinstance(plan, dict) else False
+    maybe_done = bool(plan.get("maybe_done", False)
+                      ) if isinstance(plan, dict) else False
     actions = plan.get("actions") or []
     if isinstance(actions, dict):
         actions = [actions]
     elif not isinstance(actions, list):
         actions = []
 
-    ineffective = set(state.get("ineffective_targets") or [])
-
-    # ensure params present and unique targets; enforce select/fill safety
-    normalized_actions = []
+    # --- Minimal normalization only: keep actions simple and safe ---
+    normalized_actions: List[dict] = []
     seen_targets = set()
+
     for a in actions:
         if not isinstance(a, dict):
             continue
@@ -274,127 +297,60 @@ def agent_b(state: AgentAState) -> AgentAState:
             a["params"] = {}
 
         action_type = a.get("action")
-        tid = a.get("target_id")
-
-        # --- Normalization & Correction ---
-
-        # 1. Auto-convert fill -> select for combobox
-        role = role_by_id.get(str(tid), "")
-        if action_type == "fill" and role == "combobox":
-            text_val = a["params"].get("text") or a["params"].get("value")
-            if text_val:
-                _debug(
-                    f"[AgentB] Converting fill('{text_val}') -> select('{text_val}') for combobox {tid}")
-                a["action"] = "select"
-                a["params"] = {"option": text_val}
-                action_type = "select"
-
-        # 2. Semantic Remapping (Swap target if value type mismatches target name)
-        # Only applies to select/fill where we have a value
-        val_to_check = None
-        if action_type == "select":
-            val_to_check = a["params"].get("option")
-        elif action_type == "fill":
-            val_to_check = a["params"].get("text")
-
-        if val_to_check and tid:
-            current_name = name_by_id.get(str(tid), "")
-            val_type = _heuristic_match(val_to_check, "")
-            name_type = _heuristic_match("", current_name)
-
-            # If types differ and are specific (not 'other'), try to find a better target
-            # We allow swapping if val_type is known (e.g. priority) and target is either unknown or different
-            if val_type != "other" and val_type != name_type:
-                _debug(
-                    f"[AgentB] Semantic mismatch: value='{val_to_check}' ({val_type}) vs target='{current_name}' ({name_type})")
-                # Look for a better candidate in top elements
-                best_swap = None
-                for cand in top:
-                    c_id = str(cand.get("id"))
-                    c_name = cand.get("name") or ""
-                    c_type = _heuristic_match("", c_name)
-                    if c_type == val_type and c_id not in seen_targets:
-                        best_swap = c_id
-                        _debug(
-                            f"[AgentB] Found better swap candidate: {c_id} ('{c_name}')")
-                        break
-
-                if best_swap:
-                    _debug(f"[AgentB] Swapping target {tid} -> {best_swap}")
-                    tid = best_swap
-                    a["target_id"] = best_swap
-                    # Update role for the new target to ensure subsequent checks pass
-                    role = role_by_id.get(str(tid), "")
-
-        # Enforce unique target_id (one field -> one control)
-        if tid:
-            if tid in seen_targets:
-                _debug(
-                    f"[AgentB] Skipping duplicate action for target_id {tid}")
-                continue
-            if tid in ineffective:
-                _debug(f"[AgentB] Skipping ineffective target_id {tid}")
-                continue
-            seen_targets.add(tid)
-
-        # Role-based guards
-        if action_type == "fill" and role not in {"textbox", "textarea", "searchbox", "combobox", "contenteditable"}:
-            print(f"[AgentB] Skipping fill on non-input role {role} for {tid}")
+        tid_raw = a.get("target_id")
+        if tid_raw is None:
             continue
-        if action_type == "select" and role not in {"combobox", "menuitem"}:
-            print(
-                f"[AgentB] Skipping select on non-select role {role} for {tid}")
-            continue
+        tid = str(tid_raw)
 
-        # Require params for select/fill
-        if action_type == "select":
-            opt = a["params"].get("option") or a["params"].get("value")
-            if not opt:
-                print("[AgentB] Skipping select without option")
-                continue
+        # Enforce unique target_id (one field -> one control per step)
+        if tid in seen_targets:
+            _debug(f"[AgentB] Skipping duplicate action for target_id {tid}")
+            continue
+        seen_targets.add(tid)
+
+        role = role_by_id.get(tid, "")
+
+        # Minimal role-based guards
         if action_type == "fill":
             txt = a["params"].get("text") or a["params"].get("value")
             if not txt:
                 print("[AgentB] Skipping fill without text")
                 continue
+            if role not in {"textbox", "textarea", "searchbox", "combobox", "contenteditable"}:
+                print(
+                    f"[AgentB] Skipping fill on non-input role {role} for {tid}")
+                continue
+
+        elif action_type == "select":
+            opt = a["params"].get("option") or a["params"].get("value")
+            if not opt:
+                print("[AgentB] Skipping select without option")
+                continue
+            if role not in {"combobox", "menuitem"}:
+                print(
+                    f"[AgentB] Skipping select on non-select role {role} for {tid}")
+                continue
+
+        elif action_type == "press":
+            key = a["params"].get("key")
+            if not key:
+                print("[AgentB] Skipping press without key")
+                continue
+
+        elif action_type == "click":
+            # click is always allowed; executor will handle edge cases
+            pass
+
+        else:
+            # Unknown or unsupported action type
+            print(f"[AgentB] Skipping unsupported action type {action_type}")
+            continue
 
         normalized_actions.append(a)
 
-    # --- Post-Processing: Enforce One-Click Rule for Non-Form Steps ---
-    if plan_steps is None and len(normalized_actions) > 1:
-        # Check if all actions are clicks with empty params
-        all_clicks = all(a["action"] == "click" and not a.get("params") for a in normalized_actions)
-        if all_clicks:
-            print("[AgentB] Non-form step with multiple clicks detected. Enforcing one-click rule.")
-            # Find the best match to the instruction
-            best_action = None
-            best_score = -1
-            
-            # Simple lexical scoring against instruction
-            instr_tokens = set(instruction.lower().split())
-            
-            for action in normalized_actions:
-                tid = str(action.get("target_id"))
-                name = name_by_id.get(tid, "").lower()
-                
-                # Score: overlap of name tokens with instruction tokens
-                name_tokens = set(name.split())
-                score = len(name_tokens.intersection(instr_tokens))
-                
-                # Bonus for exact phrase match
-                if name and name in instruction.lower():
-                    score += 5
-                    
-                if score > best_score:
-                    best_score = score
-                    best_action = action
-            
-            if best_action:
-                print(f"[AgentB] Selected best single action: {best_action}")
-                normalized_actions = [best_action]
-
     followup_hint = plan.get("followup_hint", "")
 
+    # No more ineffective_targets updates or suspect submit logic – keep it simple
     state["actions"] = normalized_actions
     state["followup_hint"] = followup_hint
     state["maybe_done"] = maybe_done
@@ -409,5 +365,7 @@ def agent_b(state: AgentAState) -> AgentAState:
     except Exception as e:
         print(f"[AgentB] Failed to write actions.json: {e}")
 
-    print(f"[AgentB] Output step={step_num} maybe_done={maybe_done} actions={normalized_actions} followup_hint='{followup_hint}'")
+    print(
+        f"[AgentB] Output step={step_num} maybe_done={maybe_done} actions={normalized_actions} followup_hint='{followup_hint}'"
+    )
     return state

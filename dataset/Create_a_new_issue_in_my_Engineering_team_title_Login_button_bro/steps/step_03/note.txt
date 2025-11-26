@@ -1,0 +1,2 @@
+Instruction: You are on the issue creation form; fill it with the provided details and then submit.
+Actions: fill on 57 ({'text': 'Login button broken'}), fill on 58 ({'text': 'Clicking Login does nothing'}), select on 60 ({'option': 'High'}), select on 63 ({'option': 'bug'}), click on 35 ({})

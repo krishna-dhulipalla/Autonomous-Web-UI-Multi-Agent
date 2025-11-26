@@ -1,0 +1,2 @@
+Instruction: You are currently on the projects page; open the workspace menu to access profile settings.
+Actions: click on 6 ({})

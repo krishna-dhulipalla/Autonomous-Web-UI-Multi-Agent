@@ -1,0 +1,2 @@
+Instruction: Create a new Linear project with name 'Q4 Performance Improvements' and add a description that explains the project goals with high priority.
+Actions: fill on 52 ({'text': 'Q4 Performance Improvements'}), fill on 54 ({'text': 'This project aims to enhance performance metrics and implement improvements based on Q4 analysis.'}), select on 56 ({'option': 'High'}), click on 43 ({})

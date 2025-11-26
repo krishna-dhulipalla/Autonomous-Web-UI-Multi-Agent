@@ -1,0 +1,2 @@
+Instruction: Add a comment saying 'Reviewed and approved' to the issue named 'Login button broken' 
+Actions: fill on 43 ({'text': 'Reviewed and approved'}), click on 26 ({})

@@ -1,0 +1,2 @@
+Instruction: You are on the projects list; click the 'Add project' button to start creating a new project.
+Actions: click on 20 ({})

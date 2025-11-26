@@ -1,0 +1,2 @@
+Instruction: You are on the issues page; click the 'Create new issue' button to open the issue creation form.
+Actions: click on 2 ({})

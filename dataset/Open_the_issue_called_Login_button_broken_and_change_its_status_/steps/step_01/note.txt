@@ -1,0 +1,2 @@
+Instruction: You are currently in the inbox view with no issues displayed; click on 'My issues' in the sidebar to view your issues.
+Actions: click on 4 ({})

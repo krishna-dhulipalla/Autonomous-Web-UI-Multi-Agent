@@ -1,0 +1,2 @@
+Instruction: Change my full name in my Linear profile settings to Krishna Vamsi Dhulipalla.
+Actions: click on 43 ({})

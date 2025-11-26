@@ -1,0 +1,2 @@
+Instruction: You are on the projects page for your Engineering team; click on the 'Issues' option in the sidebar to create a new issue.
+Actions: click on 35 ({})

@@ -1,0 +1,2 @@
+Instruction: Open the issue called 'Login button broken' and change its status to 'Done' and add project to Q4 Performance Improvements.
+Actions: click on 39 ({}), click on 38 ({})
