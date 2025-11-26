@@ -1,0 +1,2 @@
+Instruction: You are on the inbox page; click on 'My issues' in the sidebar to check for the issue 'UI glitch on dashboard'.
+Actions: click on 4 ({})

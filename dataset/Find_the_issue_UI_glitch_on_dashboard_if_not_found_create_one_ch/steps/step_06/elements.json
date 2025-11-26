@@ -1,0 +1,594 @@
+[
+  {
+    "id": "0",
+    "role": "button",
+    "name": "Testing_multi_agent_UI Workspace Menu",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 14.000000953674316,
+      "width": 143.99999904632568,
+      "height": 27.999999046325684
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Testing_multi_agent_UI Workspace Menu')",
+    "name_hint": "Testing_multi_agent_UI Workspa..."
+  },
+  {
+    "id": "1",
+    "role": "button",
+    "name": "Search workspace",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 166,
+      "y": 14.000000953674316,
+      "width": 28.000015258789062,
+      "height": 27.999999046325684
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Search workspace')",
+    "name_hint": "Search workspace"
+  },
+  {
+    "id": "2",
+    "role": "button",
+    "name": "Create new issue",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 202.00001525878906,
+      "y": 14.000000953674316,
+      "width": 28,
+      "height": 27.999999046325684
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Create new issue')",
+    "name_hint": "Create new issue"
+  },
+  {
+    "id": "3",
+    "role": "button",
+    "name": "Inbox\n1",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 53.000003814697266,
+      "width": 215.71429347991943,
+      "height": 27.999996185302734
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Inbox\\n1')",
+    "name_hint": "Inbox\n1"
+  },
+  {
+    "id": "4",
+    "role": "button",
+    "name": "My issues",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 82,
+      "width": 215.71429347991943,
+      "height": 28.00000762939453
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='My issues')",
+    "name_hint": "My issues"
+  },
+  {
+    "id": "5",
+    "role": "button",
+    "name": "Drafts\n1",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 111.00000762939453,
+      "width": 215.71429347991943,
+      "height": 27.99999237060547
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Drafts\\n1')",
+    "name_hint": "Drafts\n1"
+  },
+  {
+    "id": "6",
+    "role": "button",
+    "name": "Workspace",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 156,
+      "width": 215.71429347991943,
+      "height": 24.000015258789062
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Workspace')",
+    "name_hint": "Workspace"
+  },
+  {
+    "id": "7",
+    "role": "button",
+    "name": "Projects",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 182.04464721679688,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Projects')",
+    "name_hint": "Projects"
+  },
+  {
+    "id": "8",
+    "role": "button",
+    "name": "Views",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 211.04464721679688,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Views')",
+    "name_hint": "Views"
+  },
+  {
+    "id": "9",
+    "role": "button",
+    "name": "Show more workspace links",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 240.04464721679688,
+      "width": 64.13393306732178,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Show more workspace links')",
+    "name_hint": "Show more workspace links"
+  },
+  {
+    "id": "10",
+    "role": "button",
+    "name": "Your teams",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 285.0446472167969,
+      "width": 215.71429347991943,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Your teams')",
+    "name_hint": "Your teams"
+  },
+  {
+    "id": "11",
+    "role": "button",
+    "name": "Engineering\nIssues\nProjects\nViews",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 311.08929443359375,
+      "width": 215.71429347991943,
+      "height": 122
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Engineering\\nIssues\\nProjects\\nViews')",
+    "name_hint": "Engineering\nIssues\nProjects\nVi..."
+  },
+  {
+    "id": "12",
+    "role": "button",
+    "name": "Engineering",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 311.08929443359375,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Engineering')",
+    "name_hint": "Engineering"
+  },
+  {
+    "id": "13",
+    "role": "button",
+    "name": "Try",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 449.08929443359375,
+      "width": 215.71429347991943,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Try')",
+    "name_hint": "Try"
+  },
+  {
+    "id": "14",
+    "role": "button",
+    "name": "Dismiss",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 205.71429443359375,
+      "y": 477.1339416503906,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+    "name_hint": "Dismiss"
+  },
+  {
+    "id": "15",
+    "role": "button",
+    "name": "Dismiss",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 205.71429443359375,
+      "y": 506.1339416503906,
+      "width": 24,
+      "height": 24.000030517578125
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+    "name_hint": "Dismiss"
+  },
+  {
+    "id": "16",
+    "role": "button",
+    "name": "Dismiss",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 205.71429443359375,
+      "y": 535.1339721679688,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+    "name_hint": "Dismiss"
+  },
+  {
+    "id": "17",
+    "role": "button",
+    "name": "Dismiss",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 205.71429443359375,
+      "y": 564.1339721679688,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"button\", name='Dismiss')",
+    "name_hint": "Dismiss"
+  },
+  {
+    "id": "18",
+    "role": "button",
+    "name": "Open Help menu",
+    "landmark": null,
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 10,
+      "y": 686.0000610351562,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"button\", name='Open Help menu')",
+    "name_hint": "Open Help menu"
+  },
+  {
+    "id": "19",
+    "role": "button",
+    "name": "Clear",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1222.4285888671875,
+      "y": 17.071430206298828,
+      "width": 22,
+      "height": 22
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Clear')",
+    "name_hint": "Clear"
+  },
+  {
+    "id": "20",
+    "role": "button",
+    "name": "Add filter",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 556.8482666015625,
+      "y": 54.57143020629883,
+      "width": 70.09820556640625,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Add filter')",
+    "name_hint": "Add filter"
+  },
+  {
+    "id": "21",
+    "role": "button",
+    "name": "Display options",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1168.1607666015625,
+      "y": 54.57143020629883,
+      "width": 79.267822265625,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"button\", name='Display options')",
+    "name_hint": "Display options"
+  },
+  {
+    "id": "22",
+    "role": "button",
+    "name": "",
+    "landmark": "region",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1213.4285888671875,
+      "y": 598.8839721679688,
+      "width": 12,
+      "height": 12
+    },
+    "playwright_snippet": "page.get_by_role(\"button\").nth(24)",
+    "name_hint": ""
+  },
+  {
+    "id": "23",
+    "role": "button",
+    "name": "Copy issue URL",
+    "landmark": "region",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1138,
+      "y": 648,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"region\").get_by_role(\"button\", name='Copy issue URL')",
+    "name_hint": "Copy issue URL"
+  },
+  {
+    "id": "24",
+    "role": "button",
+    "name": "Copy issue ID",
+    "landmark": "region",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1174,
+      "y": 648,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"region\").get_by_role(\"button\", name='Copy issue ID')",
+    "name_hint": "Copy issue ID"
+  },
+  {
+    "id": "25",
+    "role": "button",
+    "name": "Copy branch name",
+    "landmark": "region",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 1210,
+      "y": 648,
+      "width": 24,
+      "height": 24
+    },
+    "playwright_snippet": "page.get_by_role(\"region\").get_by_role(\"button\", name='Copy branch name')",
+    "name_hint": "Copy branch name"
+  },
+  {
+    "id": "26",
+    "role": "link",
+    "name": "Issues",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 340.08929443359375,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Issues')",
+    "name_hint": "Issues"
+  },
+  {
+    "id": "27",
+    "role": "link",
+    "name": "Projects",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 369.08929443359375,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Projects')",
+    "name_hint": "Projects"
+  },
+  {
+    "id": "28",
+    "role": "link",
+    "name": "Views",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 398.08929443359375,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Views')",
+    "name_hint": "Views"
+  },
+  {
+    "id": "29",
+    "role": "link",
+    "name": "Import issues",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 475.1339416503906,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Import issues')",
+    "name_hint": "Import issues"
+  },
+  {
+    "id": "30",
+    "role": "link",
+    "name": "Link GitHub",
+    "landmark": "navigation",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 14.000000953674316,
+      "y": 562.1339721679688,
+      "width": 215.71429347991943,
+      "height": 28
+    },
+    "playwright_snippet": "page.get_by_role(\"navigation\").get_by_role(\"link\", name='Link GitHub')",
+    "name_hint": "Link GitHub"
+  },
+  {
+    "id": "31",
+    "role": "link",
+    "name": "TES-24 \u2012 UI glitch on dashboard",
+    "landmark": "region",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 888.5714721679688,
+      "y": 618.2767944335938,
+      "width": 210.60711669921875,
+      "height": 25.71429443359375
+    },
+    "playwright_snippet": "page.get_by_role(\"region\").get_by_role(\"link\", name='TES-24 \u2012 UI glitch on dashboard')",
+    "name_hint": "TES-24 \u2012 UI glitch on dashboar..."
+  },
+  {
+    "id": "32",
+    "role": "tab",
+    "name": "All",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 270.5714416503906,
+      "y": 56.57143020629883,
+      "width": 39.705352783203125,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"tab\", name='All')",
+    "name_hint": "All"
+  },
+  {
+    "id": "33",
+    "role": "tab",
+    "name": "Issues",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 314.27679443359375,
+      "y": 56.57143020629883,
+      "width": 62.071441650390625,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"tab\", name='Issues')",
+    "name_hint": "Issues"
+  },
+  {
+    "id": "34",
+    "role": "tab",
+    "name": "Projects",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 380.3482360839844,
+      "y": 56.57143020629883,
+      "width": 71.9375,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"tab\", name='Projects')",
+    "name_hint": "Projects"
+  },
+  {
+    "id": "35",
+    "role": "tab",
+    "name": "Documents",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 456.2857360839844,
+      "y": 56.57143020629883,
+      "width": 90.56253051757812,
+      "height": 24.000003814697266
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"tab\", name='Documents')",
+    "name_hint": "Documents"
+  },
+  {
+    "id": "36",
+    "role": "textbox",
+    "name": "Search by describing your issue\u2026",
+    "landmark": "main",
+    "placeholder": "",
+    "value": "",
+    "bounding_box": {
+      "x": 292.5714416503906,
+      "y": 17.66964340209961,
+      "width": 929.8571472167969,
+      "height": 20.79464340209961
+    },
+    "playwright_snippet": "page.get_by_role(\"main\").get_by_role(\"textbox\", name='Search by describing your issue\u2026')",
+    "name_hint": "Search by describing your issu..."
+  }
+]

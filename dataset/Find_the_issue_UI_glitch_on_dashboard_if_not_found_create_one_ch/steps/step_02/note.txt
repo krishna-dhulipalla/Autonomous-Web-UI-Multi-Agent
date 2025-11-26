@@ -1,0 +1,2 @@
+Instruction: You are on the 'My issues' page; check if the issue 'UI glitch on dashboard' is listed. If it is not found, click the 'Create new issue' button to create it.
+Actions: click on 2 ({})

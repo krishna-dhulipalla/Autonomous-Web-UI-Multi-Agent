@@ -142,7 +142,7 @@ def _dismiss_overlays_for_target(page, locator=None, target_open: bool = False) 
                 backdrop.wait_for(state="detached", timeout=800)
             except Exception:
                 pass
-            page.wait_for_timeout(150)
+            page.wait_for_timeout(120)
     except Exception:
         pass
 
@@ -190,16 +190,38 @@ def _dom_confirm_issue(page, expectations: Dict[str, str]) -> bool:
         return False
 
 
+# --- NEW: tiny helper to open Linear comboboxes reliably with minimal latency ---
+def _open_combobox_with_retries(page, locator, target_name: str = "", attempts: int = 3) -> None:
+    for i in range(attempts):
+        try:
+            locator.wait_for(state="visible", timeout=2500)
+            # If click center is covered (backdrop/popover), clear it fast
+            if _is_target_covered(page, locator):
+                _dismiss_overlays_for_target(page, locator, target_open=False)
+            locator.click(timeout=2500)
+            # If a listbox/option appears, consider it open; otherwise small settle
+            maybe_opt = page.get_by_role("option").first
+            if maybe_opt.count():
+                return
+            page.wait_for_timeout(80)
+            return
+        except Exception:
+            # Quick ESC to clear any intercepting popover and retry
+            try:
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(80)
+            except Exception:
+                pass
+            if i == attempts - 1:
+                raise
+
+
 def _safe_select(page, locator, option: str, role: str = "", target_name: str = "") -> bool:
-    """Simple, best-effort combobox select.
+    """Reliable, low-latency combobox select for Linear-like popovers.
 
-    This intentionally keeps logic minimal and fast:
-    - Try to skip if the value already appears to be set.
-    - Click the combobox to open it.
-    - Click the option by its visible text.
-    - Do not perform heavy verification; DOM confirmation later is the source of truth.
-
-    Returns True if we managed to run the sequence without a hard error.
+    - Skip if already set.
+    - Open combobox with small, fast retries; clear backdrops via ESC.
+    - Prefer role=option lookup; quick fallback to text=.
     """
     option = option or ""
     target_name = target_name or ""
@@ -211,7 +233,7 @@ def _safe_select(page, locator, option: str, role: str = "", target_name: str = 
     except Exception:
         pass
 
-    # Cheap idempotency check: if it already looks like the desired value, skip work.
+    # Cheap idempotency check
     try:
         if _value_matches(locator, option):
             print(
@@ -220,38 +242,53 @@ def _safe_select(page, locator, option: str, role: str = "", target_name: str = 
     except Exception:
         pass
 
-    # Make sure the combobox is visible, but fail fast if not.
-    try:
-        locator.wait_for(state="visible", timeout=2000)
-    except Exception as e:
-        raise RuntimeError(
-            f"Select combobox not visible for '{target_name}': {e}")
+    # Open the combobox with fast retries
+    _open_combobox_with_retries(
+        page, locator, target_name=target_name, attempts=3)
 
-    # Open the combobox.
+    # Click the option by ARIA role first, then text
     try:
-        locator.click(timeout=2000)
-    except Exception as e:
-        raise RuntimeError(
-            f"Select failed to open combobox for '{target_name}': {e}")
-
-    # Best-effort: click the option by its text.
-    try:
-        option_locator = page.locator(f"text={option}").first
-        option_locator.wait_for(state="visible", timeout=2000)
-        option_locator.click(timeout=2000)
-    except Exception as e:
-        # We log but do not do heavy recovery here; DOM confirmation will judge success.
-        print(
-            f"[Executor] Option click best-effort failed for '{option}' on '{target_name}': {e}")
-        return False
+        opt = page.get_by_role("option", name=option).first
+        opt.wait_for(state="visible", timeout=2500)
+        opt.click(timeout=2500)
+    except Exception as e1:
+        try:
+            opt2 = page.locator(f"text={option}").first
+            opt2.wait_for(state="visible", timeout=2000)
+            opt2.click(timeout=2000)
+        except Exception as e2:
+            print(
+                f"[Executor] Option click best-effort failed for '{option}' on '{target_name}': {e1} // fallback: {e2}")
+            return False
 
     # Small settle to let the UI update.
     try:
-        page.wait_for_timeout(150)
+        page.wait_for_timeout(120)
     except Exception:
         pass
 
     return True
+
+
+# --- NEW: tiny helper for Linear labels flow (hardcoded color 'Purple') ---
+def _apply_label_with_color(page, label_text: str, color_name: str = "Purple") -> None:
+    # Fill the label search
+    search = page.get_by_role("searchbox", name="Add labels…").first
+    search.wait_for(state="visible", timeout=3000)
+    search.fill(label_text, timeout=3000)
+
+    # Create new label row
+    create_row = page.get_by_role(
+        "option", name=f'Create new label: "{label_text}"').first
+    create_row.wait_for(state="visible", timeout=3000)
+    create_row.click(timeout=3000)
+
+    # Pick color
+    color_opt = page.get_by_role("option", name=color_name).first
+    color_opt.wait_for(state="visible", timeout=3000)
+    color_opt.click(timeout=3000)
+
+    page.wait_for_timeout(100)
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
@@ -308,11 +345,21 @@ def execute_plan(state: AgentAState) -> AgentAState:
                     _dismiss_overlays(page)
 
                 _safe_click(locator)
+
             elif action == "fill":
                 text = params.get("text") or params.get("value") or ""
                 if not text:
                     raise RuntimeError("Fill action missing text param")
-                _safe_fill(locator, text, role=elem.get("role"))
+
+                # --- NEW: hardcoded special case for Linear labels workflow ---
+                name_lc = (elem.get("name") or "").lower()
+                if role == "combobox" and "change labels" in name_lc:
+                    _open_combobox_with_retries(
+                        page, locator, target_name=elem.get("name"), attempts=3)
+                    _apply_label_with_color(page, text, color_name="Purple")
+                else:
+                    _safe_fill(locator, text, role=elem.get("role"))
+
             elif action == "select":
                 option = params.get("option")
                 if not option:
@@ -351,11 +398,13 @@ def execute_plan(state: AgentAState) -> AgentAState:
                     raise RuntimeError(
                         f"Select best-effort failed for '{option}' on '{elem.get('name')}'"
                     )
+
             elif action == "press":
                 key = params.get("key") or params.get("keys")
                 if not key:
                     raise RuntimeError("Press action missing key param")
                 locator.press(key, timeout=5000)
+
             else:
                 raise RuntimeError(f"Unknown action type: {action}")
             page.wait_for_timeout(300)
@@ -419,8 +468,6 @@ def execute_plan(state: AgentAState) -> AgentAState:
         # Compare
         ui_same = False
         if last_hash is not None and current_hash != 0:
-            # Exact match or very close? dHash is robust, exact match is usually fine for "no change"
-            # But let's allow a tiny bit of noise if we wanted, but for now exact match on 64-bit hash
             ui_same = (current_hash == last_hash)
 
         state["ui_same"] = ui_same

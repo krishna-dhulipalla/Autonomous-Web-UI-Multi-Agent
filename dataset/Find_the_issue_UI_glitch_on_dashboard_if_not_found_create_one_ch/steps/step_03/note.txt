@@ -1,0 +1,2 @@
+Instruction: You are on the 'Create new issue' form; fill it with the details for the issue 'UI glitch on dashboard' and then submit it.
+Actions: fill on 56 ({'text': 'UI glitch on dashboard'}), select on 59 ({'option': 'Urgent'}), fill on 62 ({'text': 'frontend'}), select on 58 ({'option': 'In Progress'}), click on 34 ({})

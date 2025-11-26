@@ -1,0 +1,6 @@
+{
+  "task_name": "Find_the_issue_UI_glitch_on_dashboard_if_not_found_create_one_ch",
+  "user_goal": "Find the issue 'UI glitch on dashboard' if not found create one, change its priority to Urgent, add the label 'frontend', and mark staus as 'In Progress'.",
+  "app_name": "web_agent",
+  "timestamp": "2025-11-26T09:13:18"
+}
