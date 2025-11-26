@@ -6,12 +6,40 @@ A two-agent system that automates browser workflows using Playwright plus vision
 ## 2) Architecture Diagram
 ```mermaid
 graph TD
-A["Capture UI (Playwright)"] --> B["Agent A (Vision plan)"];
-B --> C["Ranker (Score and Select DOM)"];
-C --> D["Agent B (Actions JSON)"];
-D --> E["Executor (Playwright)"];
-E --> F["Finalize / History / Artifacts"];
-F -->|loop if not done| A;
+
+%% ===== UI Capture =====
+A["Capture UI<br/>(Playwright)"] --> P["Agent A • Planner"]
+
+%% ===== Agent A Planner =====
+subgraph Navigator
+P -->|Vision mode| AV["Vision Planning<br/>(screenshot + LLM)"]
+P -->|Form mode| AD["Form Planning<br/>(DOM + LLM)"]
+P -->|DOM mode| AO["DOM Planning<br/>(lightweight)"]
+end
+
+%% ===== Ranking =====
+AV --> R["Ranker<br/>(Top-K element scoring)"]
+AD --> R
+AO --> R
+
+%% ===== Agent B =====
+R --> B["Agent B(operator)<br/>(Action Generation)"]
+
+%% ===== Executor =====
+B --> E["Executor<br/>(Playwright actions)"]
+
+%% ===== Verification Branching =====
+E --> MD{"Is task<br/>maybe_done?"}
+
+%% maybe_done = true
+MD -->|yes| D1["DOM Verification"]
+D1 -->|pass| G["Task Complete"]
+D1 -->|fail| V1["Vision Verification<br/>(frozen screenshot)"]
+V1 -->|pass| G
+V1 -->|fail| A["Capture UI<br/>(Playwright)"]
+
+%% maybe_done = false
+MD -->|no| A
 ```
 
 ## 3) Folder Structure
