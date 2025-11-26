@@ -1,7 +1,7 @@
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .types import AgentAState
 
@@ -80,47 +80,168 @@ def _safe_fill(locator, text: str, role: str = ""):
             raise
 
 
-def _safe_select(page, locator, option: str):
+def _value_matches(locator, target_text: str) -> bool:
+    """Best-effort check if control already reflects the target value."""
+    tgt = (target_text or "").strip().lower()
+    if not tgt:
+        return False
     try:
-        if locator.count() > 1:
-            locator = locator.nth(0)
+        val = locator.input_value(timeout=500)
+        if tgt in (val or "").strip().lower():
+            return True
     except Exception:
         pass
-    locator.wait_for(state="visible", timeout=5000)
-
-    # Click to open dropdown
-    locator.click(timeout=5000)
-
-    # Attempt 1: Standard role="option"
     try:
-        page.get_by_role("option", name=option).click(timeout=3000)
-        return
-    except Exception:
-        print(
-            f"[Executor] Standard select failed for '{option}', trying text match...")
-
-    # Attempt 2: Text match (for non-standard dropdowns)
-    try:
-        page.locator(f"text={option}").first.click(timeout=3000)
-        return
-    except Exception as e:
-        raise RuntimeError(f"Select failed for '{option}': {e}")
-
-
-def _dismiss_overlays(page) -> None:
-    """Best-effort overlay dismiss (escape + backdrop click)."""
-    try:
-        page.keyboard.press("Escape")
-        page.wait_for_timeout(200)
+        aria = locator.get_attribute("aria-label")
+        if aria and tgt in aria.lower():
+            return True
     except Exception:
         pass
+    try:
+        txt = locator.inner_text(timeout=500)
+        if txt and tgt in txt.strip().lower():
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def _is_target_covered(page, locator) -> bool:
+    """Lightweight hit-test to see if the target center is covered by another element."""
+    try:
+        box = locator.bounding_box(timeout=1000)
+        if not box:
+            return False
+        center_x = box["x"] + box["width"] / 2
+        center_y = box["y"] + box["height"] / 2
+        handle = locator.element_handle(timeout=1000)
+        if not handle:
+            return False
+        return page.evaluate(
+            "(x, y, target) => { const el = document.elementFromPoint(x, y); return !!(el && el !== target && !target.contains(el)); }",
+            center_x,
+            center_y,
+            handle,
+        )
+    except Exception:
+        return False
+
+
+def _dismiss_overlays_for_target(page, locator=None, target_open: bool = False) -> None:
+    """
+    Dismiss generic backdrops only when they are unrelated to the target.
+    Skip dismissal if the target is already expanded (avoid closing its own menu).
+    """
+    if target_open:
+        return
     try:
         backdrop = page.locator("[data-animated-popover-backdrop]").first
         if backdrop.count() and backdrop.is_visible():
-            backdrop.click(timeout=500)
-            page.wait_for_timeout(200)
+            page.keyboard.press("Escape")
+            try:
+                backdrop.wait_for(state="detached", timeout=800)
+            except Exception:
+                pass
+            page.wait_for_timeout(150)
     except Exception:
         pass
+
+
+def _dismiss_overlays(page) -> None:
+    """Backward-compatible wrapper to clear generic overlays."""
+    _dismiss_overlays_for_target(page, None, target_open=False)
+
+
+def _safe_select(page, locator, option: str, role: str = "", target_name: str = "") -> bool:
+    """Open combobox, type to filter, Enter, fallback click inside panel, confirm value, then close."""
+    option = option or ""
+    target_name = target_name or ""
+
+    # Idempotency: skip if already selected
+    if _value_matches(locator, option):
+        print(
+            f"[Executor] Select skipped; '{option}' already set for '{target_name}'.")
+        return True
+
+    def _find_panel() -> Optional[Any]:
+        try:
+            candidates = page.locator(
+                "[role='listbox'], [role='menu'], [data-radix-portal], [data-overlay-container]")
+            if candidates.count():
+                return candidates.first
+        except Exception:
+            return None
+        return None
+
+    attempts = 0
+    while attempts < 2:
+        attempts += 1
+        try:
+            locator.wait_for(state="visible", timeout=5000)
+        except Exception:
+            pass
+
+        expanded = False
+        try:
+            expanded = (locator.get_attribute(
+                "aria-expanded") or "").lower() == "true"
+        except Exception:
+            expanded = False
+
+        # Clear unrelated overlays before opening
+        if _is_target_covered(page, locator):
+            _dismiss_overlays_for_target(page, locator, target_open=expanded)
+
+        _dismiss_overlays_for_target(page, locator, target_open=expanded)
+
+        try:
+            locator.click(timeout=5000)
+        except Exception as e:
+            if attempts >= 2:
+                raise RuntimeError(f"Select failed to open combobox: {e}")
+            continue
+
+        panel = _find_panel()
+        try:
+            panel.wait_for(state="visible", timeout=5000)
+        except Exception:
+            # Even if panel didn't resolve, try typing and pressing Enter
+            pass
+
+        # Keyboard filter + Enter
+        try:
+            page.keyboard.type(option, delay=20)
+            page.wait_for_timeout(250)
+            page.keyboard.press("Enter")
+        except Exception:
+            pass
+
+        # Fallback: scoped click within panel
+        try:
+            if panel:
+                candidate = panel.locator(f"text={option}").first
+                if candidate.count():
+                    candidate.click(timeout=4000)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(200)
+
+        if _value_matches(locator, option):
+            # Close panel cleanly
+            try:
+                page.keyboard.press("Escape")
+            except Exception:
+                pass
+            return True
+
+        # Retry once if overlay interference or value didn't stick
+        try:
+            page.keyboard.press("Escape")
+        except Exception:
+            pass
+
+    raise RuntimeError(f"Select failed for '{option}' on '{target_name}'")
 
 
 def execute_plan(state: AgentAState) -> AgentAState:
@@ -142,6 +263,7 @@ def execute_plan(state: AgentAState) -> AgentAState:
         raise RuntimeError(
             "No live page/context found in state for execution.")
 
+    executed_ids = []
     for idx, plan in enumerate(actions, start=1):
         target_id = plan.get("target_id")
         action = plan.get("action")
@@ -155,7 +277,7 @@ def execute_plan(state: AgentAState) -> AgentAState:
             raise RuntimeError(f"No snippet for element id {target_id}")
 
         print(
-            f"[Executor] Action {idx}/{len(actions)}: {action} on id={target_id} name={elem.get('name')}")
+            f"[Executor] Step={state.get('step', 0)} Action {idx}/{len(actions)}: {action} on id={target_id} name={elem.get('name')}")
 
         locator = _get_locator(page, snippet)
         role = (elem.get("role") or "").lower()
@@ -190,7 +312,8 @@ def execute_plan(state: AgentAState) -> AgentAState:
                     print(
                         f"[Executor] Skipping select on status-like control with date-like option '{option}'")
                     continue
-                _safe_select(page, locator, option)
+                _safe_select(page, locator, option, role=elem.get(
+                    "role"), target_name=elem.get("name"))
             elif action == "press":
                 key = params.get("key") or params.get("keys")
                 if not key:
@@ -201,6 +324,7 @@ def execute_plan(state: AgentAState) -> AgentAState:
             page.wait_for_timeout(300)
             duration = time.time() - start
             print(f"[Executor] Action succeeded in {duration:.2f}s")
+            executed_ids.append(target_id)
         except Exception as e:
             duration = time.time() - start
             print(
@@ -252,21 +376,17 @@ def execute_plan(state: AgentAState) -> AgentAState:
         if ui_same:
             state["no_change_steps"] = state.get("no_change_steps", 0) + 1
             print(f"[Executor] UI Unchanged (hash={current_hash})")
+            ineffective = set(state.get("ineffective_targets") or [])
+            ineffective.update([tid for tid in executed_ids if tid])
+            state["ineffective_targets"] = list(ineffective)
         else:
             state["no_change_steps"] = 0
-            # If changed, we might want to clear tried_ids or keep them?
-            # Usually if UI changed, we are in a new state, so previous tried_ids are less relevant
-            # UNLESS we are in a loop. But the request says "Append attempted target_ids".
-            # Let's append regardless, but maybe Ranker clears them if ui_same is False?
-            # The request says: "Make Ranker... avoid repeats when UI is unchanged".
-            # So we just accumulate them here.
+            state["ineffective_targets"] = []
 
-        # Track tried IDs
-        executed_ids = [a.get("target_id")
-                        for a in actions if a.get("target_id")]
+        state["last_step_succeeded"] = not ui_same
         if "tried_ids" not in state:
             state["tried_ids"] = []
-        state["tried_ids"].extend(executed_ids)
+        state["tried_ids"].extend([tid for tid in executed_ids if tid])
 
     except Exception as e:
         print(f"[Executor] UI detection failed: {e}")
@@ -274,4 +394,5 @@ def execute_plan(state: AgentAState) -> AgentAState:
 
     # Browser stays open for the next step in the loop
     state["after_screenshot"] = str(after_path)
+
     return state

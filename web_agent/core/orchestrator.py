@@ -17,12 +17,21 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
     print(f"[AgentA] Starting run with user query: {query}")
     run_id = str(uuid4())
     run_dir = OUT_DIR / f"run_{run_id}"
+    # Initialize dataset
+    from .dataset import init_dataset
+    dataset_path = init_dataset(query)
+
     # Initial state
     state: AgentAState = {
         "run_id": run_id,
         "run_dir": str(run_dir),
+        "dataset_path": dataset_path,
         "user_query": query,
         "history": history or [],
+        "last_actions": [],
+        "ineffective_targets": [],
+        "planning_mode": None,
+        "maybe_done": False,
         "screenshot_path": None,
         "elements": [],
         "instruction": None,
@@ -37,6 +46,11 @@ def run(user_query: Optional[str] = None, history: Optional[List[str]] = None) -
         "page": None,
         "step": 0,
         "done": False,
+        "planning_mode": None,
+        "last_planning_mode": None,
+        "dom_attempts_on_this_screen": 0,
+        "last_step_succeeded": True,
+        "step_index": 0,
     }
 
     # Run the graph (it loops internally until done)

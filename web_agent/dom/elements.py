@@ -32,6 +32,13 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
             name = accessible_name(el)
             landmark = nearest_landmark(el)
             placeholder = el.get_attribute("placeholder") or ""
+            
+            value = ""
+            if role in ("textbox", "textarea", "searchbox", "combobox"):
+                try:
+                    value = el.input_value()
+                except Exception:
+                    pass
 
             elem_id = str(idx)
             idx += 1
@@ -56,6 +63,7 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
                     "name": name,
                     "landmark": landmark,
                     "placeholder": placeholder,
+                    "value": value,
                     "bounding_box": box,
                     "playwright_snippet": snippet,
                     "name_hint": name_hint,
@@ -78,6 +86,12 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
             name = accessible_name(el)
             landmark = nearest_landmark(el)
             placeholder = el.get_attribute("placeholder") or ""
+            
+            value = ""
+            try:
+                value = el.evaluate("el => el.innerText || el.textContent || ''")
+            except Exception:
+                pass
 
             elem_id = str(idx)
             idx += 1
@@ -90,6 +104,7 @@ def collect_clickable_elements(page) -> List[Dict[str, Any]]:
                 "name": name,
                 "landmark": landmark,
                 "placeholder": placeholder,
+                "value": value,
                 "bounding_box": box,
                 "playwright_snippet": snippet,
                 "name_hint": name[:30] or "ContentEditable",

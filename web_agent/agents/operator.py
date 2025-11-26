@@ -7,6 +7,13 @@ from langchain_openai import ChatOpenAI
 
 from ..core.types import AgentAState
 
+DEBUG_ACTION_FILTERS = False
+
+
+def _debug(msg: str) -> None:
+    if DEBUG_ACTION_FILTERS:
+        print(msg)
+
 
 def format_candidates(candidates: List[dict]) -> str:
     lines = []
@@ -33,6 +40,7 @@ def _heuristic_match(value: str, name: str) -> str:
 
 def agent_b(state: AgentAState) -> AgentAState:
     """Small LLM to choose one or more actions for the top-10 candidates."""
+    step_num = state.get("step", 0)
     top = state.get("top_elements") or []
     if not top:
         raise RuntimeError("No top elements available for Agent B.")
@@ -68,7 +76,40 @@ def agent_b(state: AgentAState) -> AgentAState:
             "    {\"action\": \"click\" | \"fill\" | \"select\" | \"press\", \"target_id\": \"<id>\", \"params\": { ... }},\n"
             "    ...\n"
             "  ],\n"
-            "  \"followup_hint\": \"Short note about what changed or what to expect next\"\n"
+            "  \"followup_hint\": \"Short note about what changed or what to expect next\",\n"
+            "  \"maybe_done\": true | false\n"
+            "}\n"
+            "\n"
+            "You must always set \"maybe_done\" explicitly to true or false.\n"
+            "\n"
+            "Set \"maybe_done\": true only when:\n"
+            "1. The instruction or user goal clearly describes a finite task (change X to Y, apply filter Z, create issue, save changes), AND\n"
+            "2. The actions you are returning include the final critical step for that task, such as:\n"
+            "   - Filling the last required field to the requested value.\n"
+            "   - Clicking a Save / Submit / Create / Apply / Done button.\n"
+            "   - Applying the exact filter(s) mentioned in the instruction.\n"
+            "\n"
+            "In all other cases, set \"maybe_done\": false, for example:\n"
+            "- Pure navigation (\"open Settings\", \"go to Profile\"), when more work is obviously needed afterwards.\n"
+            "- Exploratory steps (\"open menu\", \"expand dropdown\") that just reveal more UI.\n"
+            "- When you are unsure if this completes the goal.\n"
+            "\n"
+            "Example 1 – final field edit:\n"
+            "{\n"
+            "  \"actions\": [\n"
+            "    {\"action\": \"fill\", \"target_id\": \"34\", \"params\": {\"text\": \"Krishna Vamsi\"}}\n"
+            "  ],\n"
+            "  \"followup_hint\": \"Updated the 'Full name' field.\",\n"
+            "  \"maybe_done\": true\n"
+            "}\n"
+            "\n"
+            "Example 2 – mid-navigation:\n"
+            "{\n"
+            "  \"actions\": [\n"
+            "    {\"action\": \"click\", \"target_id\": \"4\", \"params\": {}}\n"
+            "  ],\n"
+            "  \"followup_hint\": \"Opened the Profile tab; you can now edit personal info.\",\n"
+            "  \"maybe_done\": false\n"
             "}\n"
             "\n"
             "Action params:\n"
@@ -103,6 +144,7 @@ def agent_b(state: AgentAState) -> AgentAState:
             "  * Produce **exactly ONE** `click` action on the single best-matching candidate.\n"
             "  * Do NOT chain multiple preparatory clicks (e.g. 'click Workspace, then click Settings') in one response.\n"
             "    Agent A will issue follow-up instructions for additional steps.\n"
+            "  * If the instruction describes only one control to interact with, return a single action.\n"
             "- Only include multiple actions in a non-form step when they are clearly part of one atomic interaction\n"
             "  (e.g. press a key immediately after a click to close a dialog), and keep this rare.\n"
             "\n"
@@ -141,12 +183,26 @@ def agent_b(state: AgentAState) -> AgentAState:
             "====================\n"
             "- Return exactly one JSON object with keys `actions` and `followup_hint`.\n"
             "- Do not wrap the object in an array and do not include any extra text.\n"
+            "- For simple navigation steps, the `actions` list MUST contain exactly one item.\n"
         )
     )
-    plan_json = json.dumps(
-        plan_steps, indent=2) if plan_steps is not None else "null"
+    history_tail = (state.get("history") or [])[-2:]
+    ui_same = state.get("ui_same", False)
+    plan_summary = "form" if plan_steps else "navigation"
+    plan_flag = "present" if plan_steps is not None else "null"
+    instr_preview = instruction if len(instruction) <= 200 else instruction[:197] + "..."
+    print(f"[AgentB] Input step={step_num} mode={plan_summary} ui_same={ui_same} plan_steps={plan_flag} history_tail={history_tail}")
+    if plan_steps and isinstance(plan_steps, dict):
+        print(
+            f"[AgentB] Instruction='{instr_preview}' plan_fields={len(plan_steps.get('fields', []))} submit={bool(plan_steps.get('submit'))} candidates={len(top)} plan_steps={plan_flag}")
+    else:
+        print(f"[AgentB] Instruction='{instr_preview}' candidates={len(top)} plan_steps={plan_flag}")
+
+    plan_json = json.dumps(plan_steps, indent=2) if plan_steps is not None else "null"
     human_text = (
-        f"User goal/instruction: {instruction}\n\n"
+        f"User goal/instruction: {instruction}\n"
+        f"Recent history (last {len(history_tail)}): {history_tail}\n"
+        f"ui_same: {ui_same}\n"
         f"plan_steps (may be null):\n{plan_json}\n\n"
         "Candidates (id, role, name, landmark):\n"
         f"{format_candidates(top)}\n\n"
@@ -165,6 +221,9 @@ def agent_b(state: AgentAState) -> AgentAState:
             [r.get("text", "") if isinstance(r, dict) else str(r) for r in raw])
     else:
         raw_text = raw if isinstance(raw, str) else str(raw)
+
+    raw_preview = raw_text if len(raw_text) <= 400 else raw_text[:397] + "..."
+    print(f"[AgentB] Raw response (truncated): {raw_preview}")
 
     plan = None
     try:
@@ -196,11 +255,14 @@ def agent_b(state: AgentAState) -> AgentAState:
     else:
         plan = {"actions": [], "followup_hint": ""}
 
+    maybe_done = bool(plan.get("maybe_done", False)) if isinstance(plan, dict) else False
     actions = plan.get("actions") or []
     if isinstance(actions, dict):
         actions = [actions]
     elif not isinstance(actions, list):
         actions = []
+
+    ineffective = set(state.get("ineffective_targets") or [])
 
     # ensure params present and unique targets; enforce select/fill safety
     normalized_actions = []
@@ -221,7 +283,7 @@ def agent_b(state: AgentAState) -> AgentAState:
         if action_type == "fill" and role == "combobox":
             text_val = a["params"].get("text") or a["params"].get("value")
             if text_val:
-                print(
+                _debug(
                     f"[AgentB] Converting fill('{text_val}') -> select('{text_val}') for combobox {tid}")
                 a["action"] = "select"
                 a["params"] = {"option": text_val}
@@ -243,7 +305,7 @@ def agent_b(state: AgentAState) -> AgentAState:
             # If types differ and are specific (not 'other'), try to find a better target
             # We allow swapping if val_type is known (e.g. priority) and target is either unknown or different
             if val_type != "other" and val_type != name_type:
-                print(
+                _debug(
                     f"[AgentB] Semantic mismatch: value='{val_to_check}' ({val_type}) vs target='{current_name}' ({name_type})")
                 # Look for a better candidate in top elements
                 best_swap = None
@@ -253,12 +315,12 @@ def agent_b(state: AgentAState) -> AgentAState:
                     c_type = _heuristic_match("", c_name)
                     if c_type == val_type and c_id not in seen_targets:
                         best_swap = c_id
-                        print(
+                        _debug(
                             f"[AgentB] Found better swap candidate: {c_id} ('{c_name}')")
                         break
 
                 if best_swap:
-                    print(f"[AgentB] Swapping target {tid} -> {best_swap}")
+                    _debug(f"[AgentB] Swapping target {tid} -> {best_swap}")
                     tid = best_swap
                     a["target_id"] = best_swap
                     # Update role for the new target to ensure subsequent checks pass
@@ -267,8 +329,11 @@ def agent_b(state: AgentAState) -> AgentAState:
         # Enforce unique target_id (one field -> one control)
         if tid:
             if tid in seen_targets:
-                print(
+                _debug(
                     f"[AgentB] Skipping duplicate action for target_id {tid}")
+                continue
+            if tid in ineffective:
+                _debug(f"[AgentB] Skipping ineffective target_id {tid}")
                 continue
             seen_targets.add(tid)
 
@@ -295,10 +360,44 @@ def agent_b(state: AgentAState) -> AgentAState:
 
         normalized_actions.append(a)
 
+    # --- Post-Processing: Enforce One-Click Rule for Non-Form Steps ---
+    if plan_steps is None and len(normalized_actions) > 1:
+        # Check if all actions are clicks with empty params
+        all_clicks = all(a["action"] == "click" and not a.get("params") for a in normalized_actions)
+        if all_clicks:
+            print("[AgentB] Non-form step with multiple clicks detected. Enforcing one-click rule.")
+            # Find the best match to the instruction
+            best_action = None
+            best_score = -1
+            
+            # Simple lexical scoring against instruction
+            instr_tokens = set(instruction.lower().split())
+            
+            for action in normalized_actions:
+                tid = str(action.get("target_id"))
+                name = name_by_id.get(tid, "").lower()
+                
+                # Score: overlap of name tokens with instruction tokens
+                name_tokens = set(name.split())
+                score = len(name_tokens.intersection(instr_tokens))
+                
+                # Bonus for exact phrase match
+                if name and name in instruction.lower():
+                    score += 5
+                    
+                if score > best_score:
+                    best_score = score
+                    best_action = action
+            
+            if best_action:
+                print(f"[AgentB] Selected best single action: {best_action}")
+                normalized_actions = [best_action]
+
     followup_hint = plan.get("followup_hint", "")
 
     state["actions"] = normalized_actions
     state["followup_hint"] = followup_hint
+    state["maybe_done"] = maybe_done
 
     # Persist actions for debugging
     run_dir = Path(state.get("run_dir", "."))
@@ -310,5 +409,5 @@ def agent_b(state: AgentAState) -> AgentAState:
     except Exception as e:
         print(f"[AgentB] Failed to write actions.json: {e}")
 
-    print(f"[AgentB] Actions: {actions}")
+    print(f"[AgentB] Output step={step_num} maybe_done={maybe_done} actions={normalized_actions} followup_hint='{followup_hint}'")
     return state

@@ -11,6 +11,7 @@ def score_elements(state: AgentAState) -> AgentAState:
     instruction = state.get("instruction") or ""
     elements = state.get("elements") or []
     tried_ids = state.get("tried_ids") or []
+    ineffective_targets = state.get("ineffective_targets") or []
     ui_same = state.get("ui_same", False)
     plan_steps: Optional[Dict] = state.get(
         "plan_steps")  # Get plan_steps from state
@@ -41,6 +42,10 @@ def score_elements(state: AgentAState) -> AgentAState:
     for e in elements:
         s = score_element(e, instruction, tried_ids, ui_same)
 
+        # Penalize ineffective targets
+        if e["id"] in ineffective_targets:
+            s -= 10.0
+
         # Boost elements that match form fields
         if plan_steps and isinstance(plan_steps, dict) and plan_steps.get("type") == "form":
             fields = plan_steps.get("fields", [])
@@ -52,7 +57,7 @@ def score_elements(state: AgentAState) -> AgentAState:
                     s += 3.0  # Strong boost for label match
 
         e_copy = {k: e.get(k) for k in ("id", "role", "name",
-                                        "landmark", "playwright_snippet", "placeholder")}
+                                        "landmark", "playwright_snippet", "placeholder", "value")}
         e_copy["score"] = s
         scored.append(e_copy)
 
