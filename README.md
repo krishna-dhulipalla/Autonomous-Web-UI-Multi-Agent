@@ -51,10 +51,6 @@ MD -->|no| A
   - `utils/` — imaging (base64 + optional ID overlays).
 - `artifacts/` — per-run outputs (screenshots, elements.json, actions, candidates).
 
-### GitHub language stats note
-Generated artifacts (including any HTML DOM dumps) are marked as `linguist-generated` via `.gitattributes` so they don’t skew
-GitHub’s language breakdown toward HTML when a large dump slips into the repo.
-
 ## 4) How to Run (Setup & Commands)
 Prereqs: Python 3.10+, Playwright browsers.  
 1) Install deps:
