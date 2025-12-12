@@ -1,0 +1,3 @@
+# Keep generated assets from skewing GitHub language stats
+artifacts/** linguist-generated=true
+*.html linguist-generated=true
